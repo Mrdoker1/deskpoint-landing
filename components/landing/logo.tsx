@@ -11,6 +11,8 @@
 
 import type { CSSProperties } from "react";
 import {
+  CURVE_BOOST,
+  DOT_BOOST,
   LOCKUP,
   LOGO_ACCENT,
   LOGO_CURVE,
@@ -29,15 +31,33 @@ const emSize = (w: number, h: number) => ({
   height: `${round4(h * EM_SCALE)}em`,
 });
 
-/** Знак: три дуги, точки на их концах и звезда — контуры из экспорта. */
+/**
+ * Знак: три дуги, точки на их концах и звезда — контуры из экспорта. Дуги и
+ * точки утолщены обводкой того же цвета (см. CURVE_BOOST / DOT_BOOST).
+ */
 function MarkPaths() {
   return (
     <>
       {LOGO_CURVES.map((d, i) => (
-        <path key={`curve-${i}`} d={d} fill={LOGO_CURVE} />
+        <path
+          key={`curve-${i}`}
+          d={d}
+          fill={LOGO_CURVE}
+          stroke={LOGO_CURVE}
+          strokeWidth={CURVE_BOOST}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
       ))}
       {LOGO_DOTS.map((d, i) => (
-        <path key={`dot-${i}`} d={d} fill={LOGO_ACCENT} />
+        <path
+          key={`dot-${i}`}
+          d={d}
+          fill={LOGO_ACCENT}
+          stroke={LOGO_ACCENT}
+          strokeWidth={DOT_BOOST}
+          strokeLinejoin="round"
+        />
       ))}
       <path d={LOGO_SPARK} fill={LOGO_ACCENT} />
     </>
