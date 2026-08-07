@@ -1,23 +1,19 @@
 /**
- * Deskpoint lockup — знак + слово, целиком в кривых (экспорт 300×93).
+ * Deskpoint lockup — знак + слово (экспорт 300×94).
  *
- * Знак — три тонкие дуги с точками на концах, сходящиеся к искре в центре.
- * Слово — залитые контуры, поэтому начертание не зависит от загрузки шрифта и не
- * «прыгает» при FOUT; точка над «i» акцентная, остальное слово одним тоном.
+ * Слово и искра — контуры из экспорта как есть; точка над «i» акцентная,
+ * остальное слово одним тоном. Дуги и точки на их концах перерисованы: дуги —
+ * плавными кривыми Безье в стиле hero-flows.svg с первого экрана, точки —
+ * окружностями чуть крупнее экспортных. Палитра и геометрия — в lib/logo-mark.ts.
  *
- * Палитра, геометрия дуг и обоснование их толщины — в lib/logo-mark.ts, оттуда
- * же их берут иконки. Цвета литеральные, не через токены — почему, написано там.
- *
- * Размер задаётся кеглем на месте вызова. EM_SCALE подобран так, чтобы высота
- * букв совпадала с прежним локапом: у него кегль давал 0.728em на высоту «D», у
- * этого «D» — 28.1 юнита, отсюда 0.0259em на юнит. Учтите: бокс здесь 93 юнита
- * против прежних 51, потому что дуги уходят далеко выше и ниже строки, — при том
- * же кегле локап выходит почти вдвое выше прежнего.
+ * Размер задаётся кеглем на месте вызова: бокс 94 юнита, EM_SCALE даёт 2.435em
+ * на высоту локапа.
  */
 
 import type { CSSProperties } from "react";
 import {
-  CURVE_BOOST,
+  CURVE_WIDTH,
+  DOT_R,
   LOCKUP,
   LOGO_ACCENT,
   LOGO_CURVE,
@@ -36,25 +32,28 @@ const emSize = (w: number, h: number) => ({
   height: `${round4(h * EM_SCALE)}em`,
 });
 
-/**
- * Знак. `boost` — добавка к толщине дуг: обводка того же цвета поверх заливки
- * утолщает ленту ровно на эту величину. Нужна потому, что экспортные 0.5 юнита
- * на мелком размере тоньше пикселя.
- */
-function MarkPaths({ boost = CURVE_BOOST }: { boost?: number }) {
+/** Знак: три плавные дуги, точки на их концах и искра в центре. */
+function MarkPaths() {
   return (
     <>
       {LOGO_CURVES.map((d, i) => (
         <path
           key={`curve-${i}`}
           d={d}
-          fill={LOGO_CURVE}
+          fill="none"
           stroke={LOGO_CURVE}
-          strokeWidth={boost}
+          strokeWidth={CURVE_WIDTH}
+          strokeLinecap="round"
         />
       ))}
-      {LOGO_DOTS.map((d, i) => (
-        <path key={`dot-${i}`} d={d} fill={LOGO_ACCENT} />
+      {LOGO_DOTS.map((dot, i) => (
+        <circle
+          key={`dot-${i}`}
+          cx={dot.cx}
+          cy={dot.cy}
+          r={DOT_R}
+          fill={LOGO_ACCENT}
+        />
       ))}
       <path d={LOGO_SPARK} fill={LOGO_ACCENT} />
     </>
@@ -110,18 +109,13 @@ function WordmarkPaths() {
   );
 }
 
-/**
- * Только знак, без слова. Размер задаётся классом (`h-*`/`w-*`) или кеглем.
- * `boost` — добавка к толщине дуг под конкретный размер.
- */
+/** Только знак, без слова. Размер задаётся классом (`h-*`/`w-*`) или кеглем. */
 export function LogoMark({
   className,
   style,
-  boost,
 }: {
   className?: string;
   style?: CSSProperties;
-  boost?: number;
 }) {
   return (
     <svg
@@ -131,18 +125,12 @@ export function LogoMark({
       className={className}
       style={style ?? emSize(MARK_BOX.w, MARK_BOX.h)}
     >
-      <MarkPaths boost={boost} />
+      <MarkPaths />
     </svg>
   );
 }
 
-export function Logo({
-  className,
-  boost,
-}: {
-  className?: string;
-  boost?: number;
-}) {
+export function Logo({ className }: { className?: string }) {
   return (
     <span
       className={`inline-flex items-center leading-none ${className ?? ""}`}
@@ -156,7 +144,7 @@ export function Logo({
         className="shrink-0"
         style={emSize(LOCKUP.w, LOCKUP.h)}
       >
-        <MarkPaths boost={boost} />
+        <MarkPaths />
         <WordmarkPaths />
       </svg>
     </span>

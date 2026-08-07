@@ -43,10 +43,9 @@ export function Navigation() {
       <nav className="mx-auto max-w-[1400px] px-6 lg:px-12">
         <div className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-6 lg:h-20">
           <a href={withBase("/")} className="flex items-center">
-            {/* Локап высокий: дуги уходят далеко выше и ниже строки, бокс 93
-                юнита против прежних 51. Кегль подобран так, чтобы знак влезал в
-                бар с воздухом: 19px → 46px в h-16, 23px → 55px в h-20. */}
-            <Logo className="text-[19px] lg:text-[23px]" />
+            {/* Локап высокий — дуги уходят далеко выше и ниже строки, бокс 94
+                юнита. Кегль: 15px → 36px в h-16, 18px → 44px в h-20. */}
+            <Logo className="text-[15px] lg:text-[18px]" />
           </a>
 
           <div className="hidden items-center justify-center gap-8 md:flex">
