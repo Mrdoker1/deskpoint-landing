@@ -1,10 +1,9 @@
 /**
  * Deskpoint lockup — знак + слово (экспорт 300×94).
  *
- * Слово и искра — контуры из экспорта как есть; точка над «i» акцентная,
- * остальное слово одним тоном. Дуги и точки на их концах перерисованы: дуги —
- * плавными кривыми Безье в стиле hero-flows.svg с первого экрана, точки —
- * окружностями чуть крупнее экспортных. Палитра и геометрия — в lib/logo-mark.ts.
+ * Вся графика — контуры из экспорта как есть: три дуги, четыре точки, звезда и
+ * слово. Точка над «i» акцентная, остальное слово одним тоном. Палитра и
+ * геометрия знака — в lib/logo-mark.ts, оттуда же их берут иконки.
  *
  * Размер задаётся кеглем на месте вызова: бокс 94 юнита, EM_SCALE даёт 2.435em
  * на высоту локапа.
@@ -12,8 +11,6 @@
 
 import type { CSSProperties } from "react";
 import {
-  CURVE_WIDTH,
-  DOT_R,
   LOCKUP,
   LOGO_ACCENT,
   LOGO_CURVE,
@@ -22,7 +19,6 @@ import {
   LOGO_SPARK,
   LOGO_WORD,
   MARK_BOX,
-  SPARK_TRANSFORM,
 } from "@/lib/logo-mark";
 
 /** em на юнит: высота «D» (28.1 юнита) даёт 0.728em, как в прежнем локапе. */
@@ -33,30 +29,17 @@ const emSize = (w: number, h: number) => ({
   height: `${round4(h * EM_SCALE)}em`,
 });
 
-/** Знак: три плавные дуги, точки на их концах и искра в центре. */
+/** Знак: три дуги, точки на их концах и звезда — контуры из экспорта. */
 function MarkPaths() {
   return (
     <>
       {LOGO_CURVES.map((d, i) => (
-        <path
-          key={`curve-${i}`}
-          d={d}
-          fill="none"
-          stroke={LOGO_CURVE}
-          strokeWidth={CURVE_WIDTH}
-          strokeLinecap="round"
-        />
+        <path key={`curve-${i}`} d={d} fill={LOGO_CURVE} />
       ))}
-      {LOGO_DOTS.map((dot, i) => (
-        <circle
-          key={`dot-${i}`}
-          cx={dot.cx}
-          cy={dot.cy}
-          r={DOT_R}
-          fill={LOGO_ACCENT}
-        />
+      {LOGO_DOTS.map((d, i) => (
+        <path key={`dot-${i}`} d={d} fill={LOGO_ACCENT} />
       ))}
-      <path d={LOGO_SPARK} fill={LOGO_ACCENT} transform={SPARK_TRANSFORM} />
+      <path d={LOGO_SPARK} fill={LOGO_ACCENT} />
     </>
   );
 }
