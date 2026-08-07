@@ -19,7 +19,6 @@ const footerLinks = {
     { name: "Безопасность", href: "/#security" },
     { name: "Кейс Альгард", href: "/#case-algard" },
     { name: "Пилот", href: "/#pilot" },
-    { name: "API", href: "/#api" },
   ],
   Правовое: [
     { name: "Реквизиты", href: "/requisites" },

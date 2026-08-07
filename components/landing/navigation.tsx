@@ -10,7 +10,6 @@ const navLinks = [
   { name: "Возможности", href: "/#features" },
   { name: "Как это работает", href: "/#how-it-works" },
   { name: "Тарифы", href: "/#pricing" },
-  { name: "API", href: "/#api" },
 ];
 
 const DASHBOARD_URL =
