@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, JetBrains_Mono, Noto_Sans } from "next/font/google";
 import { AnalyticsScripts } from "@/components/analytics/AnalyticsScripts";
+import { withBase } from "@/lib/base-path";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -51,6 +52,13 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: siteUrl,
+  },
+  // Ссылки на app/icon.tsx и app/apple-icon.tsx Next не префиксует basePath'ом
+  // при статическом экспорте, поэтому задаём их явно. На своём домене префикс
+  // пустой и адреса те же, что генерировались автоматически.
+  icons: {
+    icon: withBase("/icon"),
+    apple: withBase("/apple-icon"),
   },
 };
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Logo } from "./logo";
+import { withBase } from "@/lib/base-path";
 
 const navLinks = [
   { name: "Возможности", href: "/#features" },
@@ -41,7 +42,7 @@ export function Navigation() {
     >
       <nav className="mx-auto max-w-[1400px] px-6 lg:px-12">
         <div className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-6 lg:h-20">
-          <a href="/" className="flex items-center">
+          <a href={withBase("/")} className="flex items-center">
             <Logo className="text-[22px]" />
           </a>
 
@@ -49,7 +50,7 @@ export function Navigation() {
             {navLinks.map((link) => (
               <a
                 key={link.name}
-                href={link.href}
+                href={withBase(link.href)}
                 className="text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
                 {link.name}
@@ -68,7 +69,7 @@ export function Navigation() {
               asChild
               className="hidden rounded-full bg-primary text-primary-foreground shadow-md hover:bg-primary/90 md:inline-flex"
             >
-              <a href="/#lead">Оставить заявку</a>
+              <a href={withBase("/#lead")}>Оставить заявку</a>
             </Button>
 
             <button
@@ -88,7 +89,7 @@ export function Navigation() {
             {navLinks.map((link) => (
               <a
                 key={link.name}
-                href={link.href}
+                href={withBase(link.href)}
                 className="block py-2 text-sm"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -103,7 +104,7 @@ export function Navigation() {
               Войти
             </a>
             <a
-              href="/#lead"
+              href={withBase("/#lead")}
               className="block py-2 text-sm font-medium text-primary"
               onClick={() => setIsMobileMenuOpen(false)}
             >

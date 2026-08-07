@@ -1,0 +1,62 @@
+name: Deploy preview to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Разрешения, которых требует деплой в Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Один деплой за раз; новый push не отменяет уже идущий.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Pages отдаёт только статику, а `output: export` падает на route
+      # handler'ах с POST. Превью собирается без API — форма заявки на нём
+      # работать не будет, это ожидаемо. Рабочий деплой строится без этого шага.
+      - name: Drop server-only API routes
+        run: rm -rf app/api
+
+      - name: Build static export
+        env:
+          NEXT_OUTPUT: export
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          NEXT_PUBLIC_SITE_URL: ${{ format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+        run: npm run build
+
+      # Без этого файла Pages прячет каталог _next (Jekyll игнорирует _*).
+      - name: Add .nojekyll
+        run: touch out/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

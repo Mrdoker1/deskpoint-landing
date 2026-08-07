@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { withBase } from "@/lib/base-path";
 import { ArrowRight } from "lucide-react";
 
 export function HeroSection() {
@@ -56,7 +57,7 @@ export function HeroSection() {
       {/* Абстрактные «потоки в точку»: слева — истоки каналов, справа — узел-точка.
           Только на широких экранах, под текст не лезут. */}
       <img
-        src="/hero-flows-left.svg"
+        src={withBase("/hero-flows-left.svg")}
         alt=""
         aria-hidden="true"
         className={`pointer-events-none absolute -left-10 top-1/2 z-0 hidden w-[clamp(280px,23vw,430px)] -translate-y-1/2 select-none transition-opacity duration-1000 delay-300 lg:block ${
@@ -64,7 +65,7 @@ export function HeroSection() {
         }`}
       />
       <img
-        src="/hero-flows.svg"
+        src={withBase("/hero-flows.svg")}
         alt=""
         aria-hidden="true"
         className={`pointer-events-none absolute -right-10 top-1/2 z-0 hidden w-[clamp(320px,26vw,480px)] -translate-y-1/2 select-none transition-opacity duration-1000 delay-300 lg:block ${

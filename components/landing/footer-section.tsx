@@ -2,6 +2,7 @@
 
 import { AnimatedWave } from "./animated-wave";
 import { Logo } from "./logo";
+import { withBase } from "@/lib/base-path";
 
 const DASHBOARD_URL =
   process.env.NEXT_PUBLIC_DASHBOARD_URL || "http://localhost:3005";
@@ -39,7 +40,7 @@ export function FooterSection() {
         <div className="py-16 lg:py-24">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-12 lg:gap-8">
             <div className="col-span-2">
-              <a href="/" className="inline-flex items-center gap-2 mb-6">
+              <a href={withBase("/")} className="inline-flex items-center gap-2 mb-6">
                 <Logo className="text-[22px]" />
               </a>
               <p className="text-muted-foreground leading-relaxed mb-8 max-w-xs">
@@ -55,7 +56,7 @@ export function FooterSection() {
                   {links.map((link) => (
                     <li key={link.name}>
                       <a
-                        href={link.href}
+                        href={withBase(link.href)}
                         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                       >
                         {link.name}
@@ -71,11 +72,11 @@ export function FooterSection() {
         <div className="py-8 border-t border-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">© 2026 Deskpoint</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
-            <a href="/privacy" className="hover:text-foreground transition-colors">
+            <a href={withBase("/privacy")} className="hover:text-foreground transition-colors">
               Политика ПДн
             </a>
             <a
-              href="/requisites"
+              href={withBase("/requisites")}
               className="hover:text-foreground transition-colors"
             >
               Реквизиты
