@@ -22,6 +22,7 @@ import {
   LOGO_SPARK,
   LOGO_WORD,
   MARK_BOX,
+  SPARK_TRANSFORM,
 } from "@/lib/logo-mark";
 
 /** em на юнит: высота «D» (28.1 юнита) даёт 0.728em, как в прежнем локапе. */
@@ -55,7 +56,7 @@ function MarkPaths() {
           fill={LOGO_ACCENT}
         />
       ))}
-      <path d={LOGO_SPARK} fill={LOGO_ACCENT} />
+      <path d={LOGO_SPARK} fill={LOGO_ACCENT} transform={SPARK_TRANSFORM} />
     </>
   );
 }
