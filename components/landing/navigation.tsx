@@ -43,7 +43,7 @@ export function Navigation() {
       <nav className="mx-auto max-w-[1400px] px-6 lg:px-12">
         <div className="grid h-16 grid-cols-[auto_1fr_auto] items-center gap-6 lg:h-20">
           <a href={withBase("/")} className="flex items-center">
-            <Logo className="text-[22px]" />
+            <Logo className="text-[24px] lg:text-[28px]" />
           </a>
 
           <div className="hidden items-center justify-center gap-8 md:flex">
