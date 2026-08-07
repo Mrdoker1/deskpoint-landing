@@ -71,7 +71,7 @@ const MARKS = [
 function AnalyticsVisual() {
   const span = SCAN_TO - SCAN_FROM;
   return (
-    <svg viewBox="0 0 200 160" className="w-full h-full">
+    <svg viewBox="20 15 162 130" className="w-full h-full">
       {/* Силуэт разговора — виден всегда, задаёт форму волны */}
       {WAVE.map((h, i) => (
         <rect
@@ -132,7 +132,7 @@ function AnalyticsVisual() {
       })}
 
       {/* Луч разбора */}
-      <line x1={SCAN_FROM} y1="40" x2={SCAN_FROM} y2="132" stroke={ACCENT} strokeWidth="1.6">
+      <line x1={SCAN_FROM} y1="40" x2={SCAN_FROM} y2="132" stroke={ACCENT} strokeWidth="1.3">
         <animate attributeName="x1" values={`${SCAN_FROM};${SCAN_TO}`} dur={`${SCAN_DUR}s`} repeatCount="indefinite" />
         <animate attributeName="x2" values={`${SCAN_FROM};${SCAN_TO}`} dur={`${SCAN_DUR}s`} repeatCount="indefinite" />
         <animate attributeName="opacity" values="0;0.7;0.7;0" keyTimes="0;0.05;0.9;1" dur={`${SCAN_DUR}s`} repeatCount="indefinite" />
@@ -144,7 +144,7 @@ function AnalyticsVisual() {
         const begin = `${round3(peak - SCAN_DUR / 2)}s`;
         return (
           <g key={m.x}>
-            <line x1={m.x} y1="52" x2={m.x} y2="64" stroke="currentColor" strokeWidth="1" opacity="0.15">
+            <line x1={m.x} y1="52" x2={m.x} y2="64" stroke="currentColor" strokeWidth="0.81" opacity="0.15">
               <animate attributeName="opacity" values="0.15;0.6;0.15" dur={`${SCAN_DUR}s`} begin={begin} repeatCount="indefinite" />
             </line>
             <circle
@@ -153,7 +153,7 @@ function AnalyticsVisual() {
               r="5"
               fill={m.accent ? ACCENT : "none"}
               stroke={m.accent ? ACCENT : "currentColor"}
-              strokeWidth="2"
+              strokeWidth="1.62"
               opacity="0.18"
             >
               <animate attributeName="opacity" values="0.18;1;0.18" dur={`${SCAN_DUR}s`} begin={begin} repeatCount="indefinite" />
@@ -179,9 +179,9 @@ const BOT_BARS = [
 
 function TelephonyVisual() {
   return (
-    <svg viewBox="0 0 200 160" className="w-full h-full">
+    <svg viewBox="12 24 150 120" className="w-full h-full">
       {/* Входящий звонок */}
-      <rect x="24" y="32" width="26" height="38" rx="6" fill="none" stroke="currentColor" strokeWidth="2" />
+      <rect x="24" y="32" width="26" height="38" rx="6" fill="none" stroke="currentColor" strokeWidth="1.5" />
       <rect x="30" y="40" width="14" height="2.5" rx="1.25" fill="currentColor" opacity="0.5" />
       <circle cx="37" cy="62" r="2.5" fill="currentColor" opacity="0.5" />
 
@@ -191,36 +191,36 @@ function TelephonyVisual() {
         d="M30 98H48A8 8 0 0 1 56 106V114A8 8 0 0 1 48 122H41L33 130L36 122H30A8 8 0 0 1 22 114V106A8 8 0 0 1 30 98Z"
         fill="none"
         stroke="currentColor"
-        strokeWidth="2"
+        strokeWidth="1.5"
         strokeLinejoin="round"
       />
 
       {/* Каналы */}
-      <path d={CALL_PATH} fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.2" />
-      <path d={CHAT_PATH} fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.2" />
+      <path d={CALL_PATH} fill="none" stroke="currentColor" strokeWidth="1.12" opacity="0.2" />
+      <path d={CHAT_PATH} fill="none" stroke="currentColor" strokeWidth="1.12" opacity="0.2" />
 
       {/* Обращения идут к боту */}
-      <path d={CALL_PATH} pathLength="1" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.18 0.82">
+      <path d={CALL_PATH} pathLength="1" fill="none" stroke="currentColor" strokeWidth="1.95" strokeLinecap="round" strokeDasharray="0.18 0.82">
         <animate attributeName="stroke-dashoffset" values="1;0" dur="2.6s" repeatCount="indefinite" />
       </path>
-      <path d={CHAT_PATH} pathLength="1" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.18 0.82">
+      <path d={CHAT_PATH} pathLength="1" fill="none" stroke="currentColor" strokeWidth="1.95" strokeLinecap="round" strokeDasharray="0.18 0.82">
         <animate attributeName="stroke-dashoffset" values="1;0" dur="2.6s" begin="0.9s" repeatCount="indefinite" />
       </path>
 
       {/* Ответы бота идут обратно — тем же путём, но в другую сторону */}
-      <path d={CALL_PATH} pathLength="1" fill="none" stroke={ACCENT} strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.14 0.86">
+      <path d={CALL_PATH} pathLength="1" fill="none" stroke={ACCENT} strokeWidth="1.95" strokeLinecap="round" strokeDasharray="0.14 0.86">
         <animate attributeName="stroke-dashoffset" values="0;1" dur="2.6s" begin="1.3s" repeatCount="indefinite" />
       </path>
-      <path d={CHAT_PATH} pathLength="1" fill="none" stroke={ACCENT} strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.14 0.86">
+      <path d={CHAT_PATH} pathLength="1" fill="none" stroke={ACCENT} strokeWidth="1.95" strokeLinecap="round" strokeDasharray="0.14 0.86">
         <animate attributeName="stroke-dashoffset" values="0;1" dur="2.6s" begin="2.2s" repeatCount="indefinite" />
       </path>
 
       {/* ИИ-оператор */}
-      <line x1="130" y1="56" x2="130" y2="46" stroke="currentColor" strokeWidth="2" />
+      <line x1="130" y1="56" x2="130" y2="46" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="130" cy="43" r="3" fill={ACCENT}>
         <animate attributeName="opacity" values="1;0.35;1" dur="2.6s" repeatCount="indefinite" />
       </circle>
-      <rect x="108" y="56" width="44" height="44" rx="11" fill="none" stroke="currentColor" strokeWidth="2" />
+      <rect x="108" y="56" width="44" height="44" rx="11" fill="none" stroke="currentColor" strokeWidth="1.5" />
       {BOT_BARS.map((b, i) => (
         <rect key={b.x} x={b.x} width="4" rx="2" fill={ACCENT} y={78 - b.h[0] / 2} height={b.h[0]}>
           <animate attributeName="height" values={b.h.join(";")} dur="1.8s" begin={`${round3(i * 0.15)}s`} repeatCount="indefinite" />
@@ -236,10 +236,10 @@ const DASH_BARS = [30, 48, 22, 60, 40];
 
 function DashboardVisual() {
   return (
-    <svg viewBox="0 0 200 160" className="w-full h-full">
+    <svg viewBox="10 2 182 145.6" className="w-full h-full">
       {/* Кабинет */}
-      <rect x="14" y="26" width="112" height="98" rx="7" fill="none" stroke="currentColor" strokeWidth="2" />
-      <line x1="14" y1="44" x2="126" y2="44" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
+      <rect x="14" y="26" width="112" height="98" rx="7" fill="none" stroke="currentColor" strokeWidth="1.82" />
+      <line x1="14" y1="44" x2="126" y2="44" stroke="currentColor" strokeWidth="1.36" opacity="0.35" />
       <circle cx="24" cy="35" r="2" fill="currentColor" opacity="0.45" />
       <circle cx="32" cy="35" r="2" fill="currentColor" opacity="0.45" />
       <circle cx="40" cy="35" r="2" fill="currentColor" opacity="0.45" />
@@ -257,13 +257,13 @@ function DashboardVisual() {
       })}
 
       {/* Та же сводка уходит в Telegram */}
-      <line x1="126" y1="74" x2="146" y2="74" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity="0.35" />
+      <line x1="126" y1="74" x2="146" y2="74" stroke="currentColor" strokeWidth="1.36" strokeDasharray="2.73 3.64" opacity="0.35" />
       <circle cy="74" r="2.6" fill={ACCENT}>
         <animate attributeName="cx" values="126;146" dur="1.8s" repeatCount="indefinite" />
         <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.75;1" dur="1.8s" repeatCount="indefinite" />
       </circle>
 
-      <rect x="146" y="38" width="42" height="74" rx="9" fill="none" stroke="currentColor" strokeWidth="2" />
+      <rect x="146" y="38" width="42" height="74" rx="9" fill="none" stroke="currentColor" strokeWidth="1.82" />
       <rect x="160" y="44" width="14" height="2.5" rx="1.25" fill="currentColor" opacity="0.4" />
       <rect x="152" y="58" width="28" height="11" rx="5.5" fill="currentColor" opacity="0.25">
         <animate attributeName="opacity" values="0;0.25;0.25" keyTimes="0;0.25;1" dur="3.6s" repeatCount="indefinite" />
@@ -280,26 +280,37 @@ function DashboardVisual() {
 }
 
 /**
- * 04 · Условия: счёт за подключение, где напротив каждой позиции — ноль.
- * Две позиции и цикл 4с: на боксе 192×160 больше строк налезают друг на друга,
- * а итог должен читаться сразу. Зубчатый низ читается как счёт, а не карточка.
+ * 04 · Условия: счёт, где напротив каждой позиции — ноль.
+ *
+ * Рисунок подтянут к характеру знака Deskpoint: монолинейный контур, сильное
+ * скругление верха, чёрный контур против тёплого коричневого внутри, круглые
+ * точки вместо штрихов. Толщина держится в одном весе с соседними иконками
+ * (около 2 css-px): «как у знака» в пропорциях знака здесь давало 4.8 px и
+ * выбивалось из ряда. Бумага вытянута почти во всю высоту бокса, чтобы у итога остались
+ * поля сверху и снизу, а зубцы крупные и геометричные, а не мелкая пила.
  */
 const BILL_PAPER =
-  "M44 16H156A10 10 0 0 1 166 26V128L160 136L154 128L148 136L142 128L136 136L130 128L124 136L118 128L112 136L106 128L100 136L94 128L88 136L82 128L76 136L70 128L64 136L58 128L52 136L46 128L40 136L34 128V26A10 10 0 0 1 44 16Z";
-/** Позиции счёта: ширина названия услуги и момент появления в цикле. */
+  "M58 10H142A18 18 0 0 1 160 28V140L145 156L130 140L115 156L100 140L85 156L70 140L55 156L40 140V28A18 18 0 0 1 58 10Z";
+/** Позиции: y строки, ширина названия, начало отбивки и момент появления. */
 const BILL_ROWS = [
-  { y: 62, w: 48, at: 0.06 },
-  { y: 82, w: 36, at: 0.18 },
+  { y: 46, w: 46, dots: 114, at: 0.06 },
+  { y: 68, w: 34, dots: 102, at: 0.18 },
 ];
 const BILL_DUR = "4s";
+/** Круглые точки — рифма к точкам внутри знака. */
+const DOTS = { strokeDasharray: "0.5 7", strokeLinecap: "round" } as const;
 
 function FreeIntegrationVisual() {
   return (
-    <svg viewBox="0 0 200 160" className="w-full h-full">
-      <path d={BILL_PAPER} fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-
-      {/* Шапка счёта */}
-      <line x1="48" y1="40" x2="86" y2="40" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
+    <svg viewBox="0 2 200 160" className="w-full h-full">
+      <path
+        d={BILL_PAPER}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
 
       {/* Позиции: услуга, отбивка точками и ноль напротив */}
       {BILL_ROWS.map((row) => (
@@ -311,19 +322,9 @@ function FreeIntegrationVisual() {
             dur={BILL_DUR}
             repeatCount="indefinite"
           />
-          <line x1="48" y1={row.y} x2={48 + row.w} y2={row.y} stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.32" />
-          <line
-            x1={48 + row.w + 6}
-            y1={row.y}
-            x2="126"
-            y2={row.y}
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeDasharray="0.5 4"
-            opacity="0.3"
-          />
-          <text x="150" y={row.y + 4.5} textAnchor="end" fontSize="13" fontWeight="300" fill="currentColor" opacity="0.55">
+          <line x1="58" y1={row.y} x2={58 + row.w} y2={row.y} stroke={ACCENT} strokeWidth="2" strokeLinecap="round" />
+          <line x1={row.dots} y1={row.y} x2="126" y2={row.y} stroke={ACCENT} strokeWidth="2" {...DOTS} />
+          <text x="146" y={row.y + 6} textAnchor="end" fontSize="17" fontWeight="300" fill={ACCENT}>
             0
           </text>
         </g>
@@ -332,8 +333,8 @@ function FreeIntegrationVisual() {
       {/* Итог */}
       <g opacity="0">
         <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.3;0.38;0.85;1" dur={BILL_DUR} repeatCount="indefinite" />
-        <line x1="48" y1="102" x2="150" y2="102" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity="0.35" />
-        <text x="150" y="121" textAnchor="end" fontSize="21" fontWeight="300" letterSpacing="-0.5" fill={ACCENT}>
+        <line x1="58" y1="90" x2="146" y2="90" stroke={ACCENT} strokeWidth="2" {...DOTS} />
+        <text x="146" y="124" textAnchor="end" fontSize="26" fontWeight="300" letterSpacing="-1" fill={ACCENT}>
           0 ₽
         </text>
       </g>
@@ -342,27 +343,34 @@ function FreeIntegrationVisual() {
 }
 
 /**
- * 05 · Тариф: таймер отсчитывает фактическое время, и ровно столько ячеек
- * оплачивается. Незаполненные остаются пустыми — это и есть «без пакетов».
+ * 05 · Тариф: минуты защёлкиваются по одной. Стрелка, дуга и ячейка меняются в
+ * один и тот же момент — поэтому видно, что оплачивается ровно пройденное
+ * время. Движение дискретное (calcMode="discrete"), иначе заливка едет сама по
+ * себе и связь с ячейками теряется.
  */
 const SLOTS = 10;
-const SLOTS_USED = 6;
 const TARIFF_DUR = "6s";
-/** Общая для всех элементов заглушка на конец цикла, чтобы сброс не мигал. */
+/** Общие моменты защёлкивания: по ним синхронизированы стрелка, дуга и ячейки. */
+const TICK_TIMES = "0;0.06;0.135;0.21;0.285;0.36;0.435;0.51;0.585;0.66;0.735;1";
+/** Дуга: на каждом шаге открывается ещё одна десятая круга. */
+const TICK_DASH = "1;0.9;0.8;0.7;0.6;0.5;0.4;0.3;0.2;0.1;0.0;0";
+/** Стрелка: те же шаги, полный оборот за цикл. */
+const TICK_ROTATE = "0 100 60;36 100 60;72 100 60;108 100 60;144 100 60;180 100 60;216 100 60;252 100 60;288 100 60;324 100 60;360 100 60;360 100 60";
+/** Общее затухание в конце цикла, чтобы сброс не мигал. */
 const FADE_VALUES = "0;1;1;0;0";
-const FADE_KEYS = "0;0.02;0.85;0.95;1";
+const FADE_KEYS = "0;0.02;0.92;0.97;1";
 
 function PerMinuteVisual() {
   return (
-    <svg viewBox="0 0 200 160" className="w-full h-full">
+    <svg viewBox="25 18 151 120.8" className="w-full h-full">
       {/* Циферблат */}
-      <circle cx="100" cy="60" r="30" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.35" />
-      <line x1="100" y1="33" x2="100" y2="38" stroke="currentColor" strokeWidth="2" opacity="0.3" />
-      <line x1="127" y1="60" x2="122" y2="60" stroke="currentColor" strokeWidth="2" opacity="0.3" />
-      <line x1="100" y1="87" x2="100" y2="82" stroke="currentColor" strokeWidth="2" opacity="0.3" />
-      <line x1="73" y1="60" x2="78" y2="60" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+      <circle cx="100" cy="60" r="30" fill="none" stroke="currentColor" strokeWidth="1.51" opacity="0.35" />
+      <line x1="100" y1="33" x2="100" y2="38" stroke="currentColor" strokeWidth="1.51" opacity="0.3" />
+      <line x1="127" y1="60" x2="122" y2="60" stroke="currentColor" strokeWidth="1.51" opacity="0.3" />
+      <line x1="100" y1="87" x2="100" y2="82" stroke="currentColor" strokeWidth="1.51" opacity="0.3" />
+      <line x1="73" y1="60" x2="78" y2="60" stroke="currentColor" strokeWidth="1.51" opacity="0.3" />
 
-      {/* Отсчитанное время — дуга нарастает вместе со стрелкой */}
+      {/* Пройденное время: дуга прирастает ровно на одну минуту за шаг */}
       <circle
         cx="100"
         cy="60"
@@ -370,41 +378,34 @@ function PerMinuteVisual() {
         pathLength="1"
         fill="none"
         stroke={ACCENT}
-        strokeWidth="2.5"
+        strokeWidth="1.89"
         strokeLinecap="round"
         strokeDasharray="1 1"
         strokeDashoffset="1"
         transform="rotate(-90 100 60)"
       >
-        <animate attributeName="stroke-dashoffset" values="1;0.4;0.4;0.4" keyTimes="0;0.54;0.85;1" dur={TARIFF_DUR} repeatCount="indefinite" />
+        <animate attributeName="stroke-dashoffset" values={TICK_DASH} keyTimes={TICK_TIMES} calcMode="discrete" dur={TARIFF_DUR} repeatCount="indefinite" />
         <animate attributeName="opacity" values={FADE_VALUES} keyTimes={FADE_KEYS} dur={TARIFF_DUR} repeatCount="indefinite" />
       </circle>
 
-      <line x1="100" y1="60" x2="100" y2="38" stroke={ACCENT} strokeWidth="2.4" strokeLinecap="round">
-        <animateTransform
-          attributeName="transform"
-          type="rotate"
-          values="0 100 60;216 100 60;216 100 60;216 100 60"
-          keyTimes="0;0.54;0.85;1"
-          dur={TARIFF_DUR}
-          repeatCount="indefinite"
-        />
+      <line x1="100" y1="60" x2="100" y2="38" stroke={ACCENT} strokeWidth="1.81" strokeLinecap="round">
+        <animateTransform attributeName="transform" type="rotate" values={TICK_ROTATE} keyTimes={TICK_TIMES} calcMode="discrete" dur={TARIFF_DUR} repeatCount="indefinite" />
         <animate attributeName="opacity" values={FADE_VALUES} keyTimes={FADE_KEYS} dur={TARIFF_DUR} repeatCount="indefinite" />
       </line>
       <circle cx="100" cy="60" r="3.2" fill={ACCENT} opacity="0.9" />
 
-      {/* Ячейки оплаты: заполняются только те, что реально использованы */}
+      {/* Ячейки оплаты: одна ячейка — одна защёлкнувшаяся минута */}
       {Array.from({ length: SLOTS }, (_, i) => (
-        <rect key={i} x={29 + i * 15} y="110" width="8" height="16" rx="3" fill="none" stroke="currentColor" strokeWidth="1.6" opacity="0.25" />
+        <rect key={`slot-${i}`} x={29 + i * 15} y="110" width="8" height="16" rx="3" fill="none" stroke="currentColor" strokeWidth="1.21" opacity="0.25" />
       ))}
-      {Array.from({ length: SLOTS_USED }, (_, i) => {
-        const at = round3((i + 1) * 0.09);
+      {Array.from({ length: SLOTS }, (_, i) => {
+        const at = TICK_TIMES.split(";")[i + 1];
         return (
-          <rect key={i} x={29 + i * 15} y="110" width="8" height="16" rx="3" fill={ACCENT} opacity="0">
+          <rect key={`paid-${i}`} x={29 + i * 15} y="110" width="8" height="16" rx="3" fill={ACCENT} opacity="0">
             <animate
               attributeName="opacity"
               values="0;0;1;1;0;0"
-              keyTimes={`0;${at};${round3(at + 0.02)};0.85;0.95;1`}
+              keyTimes={`0;${at};${round3(Number(at) + 0.002)};0.92;0.97;1`}
               dur={TARIFF_DUR}
               repeatCount="indefinite"
             />

@@ -71,6 +71,22 @@
 }
 
 @layer utilities {
+  /* Фон из дудлов уползает ровно на одну плитку и зацикливается. */
+  .doodle-drift {
+    animation: doodle-drift 90s linear infinite;
+  }
+
+  @keyframes doodle-drift {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(460px, 460px, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .doodle-drift {
+      animation: none;
+    }
+  }
+
   .font-display {
     font-family: var(--font-display);
   }
