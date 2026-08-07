@@ -320,7 +320,12 @@ export function CtaSection() {
                       type="submit"
                       size="lg"
                       disabled={submitState === "loading"}
-                      className="relative bg-primary hover:bg-primary/90 text-primary-foreground px-8 h-14 text-base rounded-full group shadow-lg"
+                      /* Ховер непрозрачный, а не bg-primary/90: под кнопку
+                         уходят линии потоков, и через полупрозрачный фон они
+                         просвечивали. color-mix даёт ровно тот цвет, который
+                         давала полупрозрачность поверх фона страницы, так что
+                         кнопка выглядит как прежде. */
+                      className="relative bg-primary hover:bg-[color-mix(in_oklch,var(--dp-primary)_90%,var(--dp-background))] text-primary-foreground px-8 h-14 text-base rounded-full group shadow-lg"
                     >
                       {submitState === "loading"
                         ? "Отправляем…"
