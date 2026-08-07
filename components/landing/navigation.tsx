@@ -25,6 +25,29 @@ export function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  /**
+   * Меню занимает весь экран, поэтому страницу под ним нужно застопорить —
+   * иначе прокрутка уходит в неё и панель едет вместе с фоном. Escape закрывает:
+   * на полноэкранной панели крестик может оказаться вне досягаемости большого
+   * пальца, а выйти надо всегда.
+   */
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isMobileMenuOpen]);
+
   // The bar keeps its full width and height at every scroll position — only the
   // backdrop firms up, so it never collapses into a floating strip. At the top
   // it stays fully transparent: a translucent fill over the page's gradient
@@ -79,38 +102,57 @@ export function Navigation() {
               onClick={() => setIsMobileMenuOpen((v) => !v)}
               aria-label="Меню"
               aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
+        {/*
+          Панель на весь экран ниже бара: top-16 совпадает с его высотой (бар на
+          мобильном h-16), поэтому логотип и крестик остаются видимыми и рабочими
+          — z-40 против z-50 у шапки. Разделы крупным кеглем, вход и заявка
+          прижаты к низу, где до них дотягивается палец.
+        */}
         {isMobileMenuOpen && (
-          <div className="space-y-3 border-t border-foreground/10 py-4 md:hidden">
-            {navLinks.map((link) => (
+          <div
+            id="mobile-menu"
+            className="fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col overflow-y-auto bg-background px-6 pb-10 pt-10 md:hidden"
+          >
+            <div className="flex flex-col">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={withBase(link.href)}
+                  className="border-b border-foreground/10 py-5 font-display text-4xl tracking-tight"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+
+            <div className="mt-auto space-y-4 pt-10">
               <a
-                key={link.name}
-                href={withBase(link.href)}
-                className="block py-2 text-sm"
+                href={DASHBOARD_URL}
+                className="block text-center text-lg text-muted-foreground"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {link.name}
+                Войти
               </a>
-            ))}
-            <a
-              href={DASHBOARD_URL}
-              className="block py-2 text-sm"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Войти
-            </a>
-            <a
-              href={withBase("/#lead")}
-              className="block py-2 text-sm font-medium text-primary"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Оставить заявку
-            </a>
+              <Button
+                asChild
+                className="h-14 w-full rounded-full bg-primary text-base text-primary-foreground shadow-md hover:bg-primary/90"
+              >
+                <a
+                  href={withBase("/#lead")}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Оставить заявку
+                </a>
+              </Button>
+            </div>
           </div>
         )}
       </nav>

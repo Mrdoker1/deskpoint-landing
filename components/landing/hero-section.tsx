@@ -115,9 +115,15 @@ export function HeroSection() {
           каждому сотруднику и по отделу.
         </p>
 
+        {/*
+          Composite pill only from sm up. On phones the wrapper's border and fill
+          are dropped and moved onto the input itself: inside the card the field
+          was transparent and unbordered, so it read as loose placeholder text
+          above a button rather than as something to type into.
+        */}
         <form
           onSubmit={handleSubmit}
-          className={`mx-auto mt-12 flex w-full max-w-[620px] flex-col gap-2 rounded-3xl border border-foreground/15 bg-card/60 p-2 shadow-sm backdrop-blur-sm sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:py-1.5 sm:pl-7 sm:pr-1.5 ${reveal(
+          className={`mx-auto mt-12 flex w-full max-w-[620px] flex-col gap-3 sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:border sm:border-foreground/15 sm:bg-card/60 sm:py-1.5 sm:pl-7 sm:pr-1.5 sm:shadow-sm sm:backdrop-blur-sm ${reveal(
             "delay-300"
           )}`}
         >
@@ -133,12 +139,12 @@ export function HeroSection() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Рабочий email"
-            className="h-12 min-w-0 flex-1 rounded-full bg-transparent px-5 text-base placeholder:text-muted-foreground focus:outline-none sm:px-0"
+            className="h-14 min-w-0 flex-1 rounded-full border border-foreground/15 bg-card/60 px-6 text-base shadow-sm backdrop-blur-sm placeholder:text-muted-foreground focus:border-foreground/40 focus:outline-none sm:h-12 sm:border-0 sm:bg-transparent sm:px-0 sm:shadow-none sm:backdrop-blur-none sm:focus:border-0"
           />
           <Button
             type="submit"
             size="lg"
-            className="group h-12 shrink-0 rounded-full bg-primary px-8 text-base text-primary-foreground shadow-md hover:bg-primary/90"
+            className="group h-14 w-full shrink-0 rounded-full bg-primary px-8 text-base text-primary-foreground shadow-md hover:bg-primary/90 sm:h-12 sm:w-auto"
           >
             Оставить заявку
             <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
