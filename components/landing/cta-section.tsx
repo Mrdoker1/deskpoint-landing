@@ -2,10 +2,79 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { withBase } from "@/lib/base-path";
 import { ArrowRight } from "lucide-react";
 
 type SubmitState = "idle" | "loading" | "success" | "error";
+
+/**
+ * Потоки, приходящие в кнопку заявки, — продолжение рисунка с первого экрана:
+ * те же сходящиеся кривые с бегущими импульсами, те же цвета.
+ *
+ * Точка сходимости — правый край viewBox по центру высоты. svg прижат к левому
+ * краю кнопки через right-full и центрирован по ней, поэтому сходимость всегда
+ * попадает ровно в кнопку и следует за ней при любой ширине — подгонять
+ * координаты под вёрстку не нужно.
+ *
+ * Высота 140 держит потоки у самой кнопки, так что до строки с почтой выше они
+ * не доходят. Ниже lg столбцы складываются и места слева от кнопки нет — там не
+ * показываем.
+ */
+const LEAD_FLOWS = [
+  { d: "M-40 8C180 26 300 60 520 70", dur: "9.5s", delay: "-1.2s" },
+  { d: "M-40 48C170 58 320 66 520 70", dur: "7.5s", delay: "-4.1s" },
+  { d: "M-40 96C190 96 330 80 520 70", dur: "11s", delay: "-2.6s" },
+  { d: "M-40 134C210 128 350 92 520 70", dur: "13s", delay: "-6.2s" },
+  { d: "M150 -16C280 6 400 44 520 70", dur: "8.5s", delay: "-0.4s" },
+  { d: "M190 156C300 140 410 100 520 70", dur: "10.5s", delay: "-5.3s" },
+];
+
+function LeadFlows() {
+  return (
+    <svg
+      viewBox="0 0 520 140"
+      fill="none"
+      aria-hidden="true"
+      className="pointer-events-none absolute right-full top-1/2 hidden h-[140px] w-[520px] -translate-y-1/2 select-none lg:block"
+    >
+      <style>{`
+        .lf-pulse {
+          fill: none;
+          stroke-linecap: round;
+          stroke-dasharray: 0.12 0.88;
+          animation: lf-flow linear infinite;
+        }
+        @keyframes lf-flow {
+          from { stroke-dashoffset: 1; }
+          to { stroke-dashoffset: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .lf-pulse { display: none; }
+        }
+      `}</style>
+      {LEAD_FLOWS.map((f) => (
+        <path
+          key={f.d}
+          d={f.d}
+          stroke="#402718"
+          strokeOpacity="0.16"
+          strokeWidth="1.6"
+        />
+      ))}
+      {LEAD_FLOWS.map((f) => (
+        <path
+          key={`pulse-${f.d}`}
+          className="lf-pulse"
+          d={f.d}
+          pathLength="1"
+          stroke="#74452c"
+          strokeOpacity="0.6"
+          strokeWidth="2.2"
+          style={{ animationDuration: f.dur, animationDelay: f.delay }}
+        />
+      ))}
+    </svg>
+  );
+}
 
 export function CtaSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -108,9 +177,7 @@ export function CtaSection() {
             начинаются на той же высоте, что и заголовок.
           */}
           <div className="relative z-10 grid gap-10 px-6 py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:gap-16 lg:px-12 lg:py-16">
-            {/* lg:pb-28 резервирует полосу под рисунок: текст физически не может
-                в неё войти, поэтому наезд исключён при любой ширине. */}
-            <div className="relative flex flex-col lg:pb-28">
+            <div className="relative flex flex-col">
               <h2 className="text-3xl lg:text-5xl font-display tracking-tight leading-[1.02]">
                 Оставьте заявку — покажем Deskpoint на ваших обращениях.
               </h2>
@@ -128,29 +195,6 @@ export function CtaSection() {
                 · ответ в рабочие дни
               </p>
 
-              {/*
-                Анимированные «потоки в точку» с первого экрана. Раньше рисунок
-                накрывал текст: столбец в grid растягивается на высоту строки, и
-                при высоте картинки 480px привязка к низу поднимала её до самого
-                заголовка. Теперь она живёт в полосе, зарезервированной через
-                lg:pb-28, и полоса её обрезает — выйти на текст физически нельзя.
-
-                Хаб в ассете стоит ровно по вертикальному центру (y=400 из 800),
-                поэтому top-1/2 с -translate-y-1/2 показывает именно место, где
-                потоки сходятся, без подгонки числами. Ширину взял больше прежней
-                (560 против 420) — линии в ассете волосяные, и на мелком масштабе
-                от них оставалась дымка; здесь они выходят около 1.4px.
-
-                Ниже lg столбцы складываются и полосы нет — там не показываем.
-              */}
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-28 overflow-hidden lg:block">
-                <img
-                  src={withBase("/hero-flows.svg")}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute -left-10 top-1/2 w-[560px] -translate-y-1/2 select-none opacity-60"
-                />
-              </div>
             </div>
 
             <div className="relative">
@@ -234,11 +278,20 @@ export function CtaSection() {
                   )}
 
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                    {/* Потоки приходят в кнопку слева, кнопка отзывается
+                        расходящимся кольцом. Обёртка relative — точка отсчёта и
+                        для потоков, и для кольца. */}
+                    <span className="relative inline-flex shrink-0">
+                      <LeadFlows />
+                      <span
+                        aria-hidden="true"
+                        className="lead-pulse pointer-events-none absolute inset-0 rounded-full border border-primary/50"
+                      />
                     <Button
                       type="submit"
                       size="lg"
                       disabled={submitState === "loading"}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 h-14 text-base rounded-full group shadow-lg"
+                      className="relative bg-primary hover:bg-primary/90 text-primary-foreground px-8 h-14 text-base rounded-full group shadow-lg"
                     >
                       {submitState === "loading"
                         ? "Отправляем…"
@@ -247,6 +300,7 @@ export function CtaSection() {
                         <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                       )}
                     </Button>
+                    </span>
                     <Button
                       asChild
                       size="lg"

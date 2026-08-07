@@ -87,6 +87,24 @@
     }
   }
 
+  /* Кнопка заявки: в неё приходят потоки, и она отзывается расходящимся
+     кольцом. Ритм тот же, что у .ping в hero-flows.svg на первом экране. */
+  .lead-pulse {
+    animation: lead-pulse 2.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  }
+
+  @keyframes lead-pulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    70%, 100% { transform: scale(1.16); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lead-pulse {
+      animation: none;
+      opacity: 0;
+    }
+  }
+
   .font-display {
     font-family: var(--font-display);
   }
