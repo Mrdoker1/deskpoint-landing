@@ -54,24 +54,35 @@ export function HeroSection() {
         }}
       />
 
-      {/* Абстрактные «потоки в точку»: слева — истоки каналов, справа — узел-точка.
-          Только на широких экранах, под текст не лезут. */}
-      <img
-        src={withBase("/hero-flows-left.svg")}
-        alt=""
+      {/* Абстрактные «потоки в точку»: слева — истоки каналов, справа — узел.
+          Стоят строго за границей коробки 950px — она чуть шире самих строк
+          заголовка (~870px), поэтому до букв остаётся воздух и линии на них не
+          заходят ни при какой ширине окна.
+          Ширина — свободное место сбоку с небольшим вылетом за край: линии заполняют весь
+          просвет и слегка уходят за край экрана, отчего рисунок крупнее, а
+          расстояние до текста не меняется. Узел правого потока сидит на 67%
+          ширины, поэтому в кадре остаётся. Дальше потолка линии не растут —
+          на широком мониторе они стоят у текста, а излишек уходит к краям. Ниже 1400px места нет вовсе —
+          там линии не показываем, чтобы не лезли на текст обрубками. */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 mx-auto hidden max-w-[950px] select-none min-[1300px]:block"
         aria-hidden="true"
-        className={`pointer-events-none absolute -left-10 top-1/2 z-0 hidden w-[clamp(280px,23vw,430px)] -translate-y-1/2 select-none transition-opacity duration-1000 delay-300 lg:block ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}
-      />
-      <img
-        src={withBase("/hero-flows.svg")}
-        alt=""
-        aria-hidden="true"
-        className={`pointer-events-none absolute -right-10 top-1/2 z-0 hidden w-[clamp(320px,26vw,480px)] -translate-y-1/2 select-none transition-opacity duration-1000 delay-300 lg:block ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}
-      />
+      >
+        <img
+          src={withBase("/hero-flows-left.svg")}
+          alt=""
+          className={`absolute right-full top-1/2 w-[clamp(150px,calc((100vw-950px)*0.6),780px)] -translate-y-1/2 transition-opacity duration-1000 delay-300 ${
+            isVisible ? "opacity-100" : "opacity-0"
+          }`}
+        />
+        <img
+          src={withBase("/hero-flows.svg")}
+          alt=""
+          className={`absolute left-full top-1/2 w-[clamp(150px,calc((100vw-950px)*0.6),860px)] -translate-y-1/2 transition-opacity duration-1000 delay-300 ${
+            isVisible ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1080px] px-6 py-24 text-center lg:py-32">
         <p
@@ -83,11 +94,15 @@ export function HeroSection() {
         </p>
 
         <h1
-          className={`mx-auto mt-8 max-w-[19ch] text-balance font-display text-[clamp(2.25rem,6vw,4.75rem)] leading-[1.03] tracking-tight ${reveal(
+          className={`mx-auto mt-8 max-w-[19ch] text-balance font-display lg:max-w-none lg:[text-wrap:normal] text-[clamp(2.25rem,6vw,4.75rem)] leading-[1.03] tracking-tight ${reveal(
             "delay-100"
           )}`}
         >
-          Вся аналитика команды поддержки и все каналы связи в одном окне
+          Вся аналитика команды{" "}
+          <br className="hidden lg:inline" />
+          поддержки и все каналы{" "}
+          <br className="hidden lg:inline" />
+          связи в одном окне
         </h1>
 
         <p
