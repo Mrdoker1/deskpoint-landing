@@ -9,7 +9,7 @@ const features = [
     title: "Анализируем каждый звонок и сообщение",
     description:
       "ИИ разбирает все ваши звонки и переписки — тональность, качество, проблемные моменты. Видите, что реально происходит с клиентами, а не полагаетесь на ощущения.",
-    visual: "deploy",
+    visual: "analytics",
   },
   {
     number: "02",
@@ -17,7 +17,7 @@ const features = [
     title: "Подключаем вашу телефонию с ИИ-оператором",
     description:
       "Интегрируемся с вашей телефонией напрямую или настраиваем её через наших партнёров — ИИ-бот сам отвечает на звонки и сообщения клиентов. Менять провайдера или разбираться в интеграции самим не нужно.",
-    visual: "ai",
+    visual: "telephony",
   },
   {
     number: "03",
@@ -25,7 +25,7 @@ const features = [
     title: "Удобный дашборд — и Telegram под рукой",
     description:
       "Все звонки и вся статистика — в одном месте, наглядно и без лишнего. Плюс удобный бот и группа в Telegram для руководителей — ключевая информация доступна не только в кабинете.",
-    visual: "deploy",
+    visual: "dashboard",
   },
   {
     number: "04",
@@ -33,7 +33,7 @@ const features = [
     title: "Бесплатная интеграция",
     description:
       "Подключаем полностью бесплатно. Понравится — продолжаете работать. Не понравится — ничего не платите и ничем не обязаны.",
-    visual: "security",
+    visual: "free",
   },
   {
     number: "05",
@@ -41,276 +41,394 @@ const features = [
     title: "Оплата по минутам",
     description:
       "Платите только за фактическое использование — без пакетов и переплаты за то, чем не пользуетесь.",
-    visual: "ai",
+    visual: "perminute",
   },
 ];
 
-function DeployVisual() {
+const ACCENT = "var(--dp-primary)";
+
+/** Держит координаты SVG одинаковыми на сервере и в браузере. */
+const round3 = (n: number) => Math.round(n * 1000) / 1000;
+
+/* --------------------------------------------------------------------------
+   Визуалы карточек. Каждый показывает ровно то, о чём написано рядом, и
+   рассчитан на бокс 200×160. Структура — currentColor, акценты — --dp-primary.
+   Анимация на SMIL, как и в остальном файле.
+   -------------------------------------------------------------------------- */
+
+/** 01 · Аналитика: ИИ прослушивает разговор и помечает моменты. */
+const WAVE = [10, 18, 30, 22, 44, 58, 36, 26, 52, 70, 44, 30, 20, 38, 62, 48, 28, 16, 34, 24, 14, 10];
+const SCAN_FROM = 26;
+const SCAN_TO = 174;
+const SCAN_DUR = 4;
+/** Найденные моменты: середина — проблемный, потому и акцентная. */
+const MARKS = [
+  { x: 61, accent: false },
+  { x: 103, accent: true },
+  { x: 145, accent: false },
+];
+
+function AnalyticsVisual() {
+  const span = SCAN_TO - SCAN_FROM;
   return (
     <svg viewBox="0 0 200 160" className="w-full h-full">
-      <defs>
-        <clipPath id="deployClip">
-          <rect x="30" y="20" width="140" height="120" rx="4" />
-        </clipPath>
-      </defs>
-      
-      {/* Container */}
-      <rect x="30" y="20" width="140" height="120" rx="4" fill="none" stroke="currentColor" strokeWidth="2" />
-      
-      {/* Animated bars */}
-      <g clipPath="url(#deployClip)">
-        {[0, 1, 2, 3, 4, 5].map((i) => (
+      {/* Силуэт разговора — виден всегда, задаёт форму волны */}
+      {WAVE.map((h, i) => (
+        <rect
+          key={`base-${i}`}
+          x={SCAN_FROM + i * 7}
+          y={96 - h / 2}
+          width="3.4"
+          height={h}
+          rx="1.7"
+          fill="currentColor"
+          opacity="0.14"
+        />
+      ))}
+
+      {/* Разбор идёт по одной полоске: каждая выстреливает от центра и гаснет.
+          Резкая огибающая (быстрый подъём, удержание, быстрый спад) — чтобы
+          горела различимая группа полосок, а не плавная растяжка яркости. */}
+      {WAVE.map((h, i) => {
+        const begin = `${round3(((i * 7) / span) * SCAN_DUR)}s`;
+        const keyTimes = "0;0.04;0.26;0.34;1";
+        return (
           <rect
-            key={i}
-            x="40"
-            y={35 + i * 16}
-            width="120"
-            height="10"
-            rx="2"
+            key={`live-${i}`}
+            x={SCAN_FROM + i * 7}
+            y="96"
+            width="3.4"
+            height="0"
+            rx="1.7"
             fill="currentColor"
-            opacity="0.15"
+            opacity="0"
           >
             <animate
               attributeName="opacity"
-              values="0.15;0.8;0.15"
-              dur="2s"
-              begin={`${i * 0.15}s`}
+              values="0;0.95;0.95;0;0"
+              keyTimes={keyTimes}
+              dur={`${SCAN_DUR}s`}
+              begin={begin}
               repeatCount="indefinite"
             />
             <animate
-              attributeName="width"
-              values="20;120;20"
-              dur="2s"
-              begin={`${i * 0.15}s`}
+              attributeName="y"
+              values={`96;${96 - h / 2};${96 - h / 2};96;96`}
+              keyTimes={keyTimes}
+              dur={`${SCAN_DUR}s`}
+              begin={begin}
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="height"
+              values={`0;${h};${h};0;0`}
+              keyTimes={keyTimes}
+              dur={`${SCAN_DUR}s`}
+              begin={begin}
               repeatCount="indefinite"
             />
           </rect>
-        ))}
-      </g>
-      
-      {/* Progress indicator */}
-      <circle cx="100" cy="155" r="3" fill="currentColor" opacity="0.3">
-        <animate attributeName="opacity" values="0.3;1;0.3" dur="1s" repeatCount="indefinite" />
-      </circle>
-    </svg>
-  );
-}
+        );
+      })}
 
-/** Keeps SVG coordinates identical on the server and in the browser. */
-const round3 = (n: number) => Math.round(n * 1000) / 1000;
+      {/* Луч разбора */}
+      <line x1={SCAN_FROM} y1="40" x2={SCAN_FROM} y2="132" stroke={ACCENT} strokeWidth="1.6">
+        <animate attributeName="x1" values={`${SCAN_FROM};${SCAN_TO}`} dur={`${SCAN_DUR}s`} repeatCount="indefinite" />
+        <animate attributeName="x2" values={`${SCAN_FROM};${SCAN_TO}`} dur={`${SCAN_DUR}s`} repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;0.7;0.7;0" keyTimes="0;0.05;0.9;1" dur={`${SCAN_DUR}s`} repeatCount="indefinite" />
+      </line>
 
-function AIVisual() {
-  return (
-    <svg viewBox="0 0 200 160" className="w-full h-full">
-      {/* Central node */}
-      <circle cx="100" cy="80" r="12" fill="currentColor">
-        <animate attributeName="r" values="12;14;12" dur="2s" repeatCount="indefinite" />
-      </circle>
-      
-      {/* Orbiting nodes */}
-      {[0, 1, 2, 3, 4, 5].map((i) => {
-        const angle = (i * 60) * (Math.PI / 180);
-        const radius = 50;
-        // Round: Math.sin/cos can differ by one ulp between the Node and browser
-        // V8 builds, and the full-precision literals then hydrate as a mismatch.
-        const x = round3(100 + Math.cos(angle) * radius);
-        const y = round3(80 + Math.sin(angle) * radius);
+      {/* Отметки: тональность, качество, проблемные моменты */}
+      {MARKS.map((m) => {
+        const peak = ((m.x - SCAN_FROM) / span) * SCAN_DUR;
+        const begin = `${round3(peak - SCAN_DUR / 2)}s`;
         return (
-          <g key={i}>
-            {/* Connection line */}
-            <line
-              x1="100"
-              y1="80"
-              x2={x}
-              y2={y}
-              stroke="currentColor"
-              strokeWidth="1"
-              opacity="0.3"
-            >
-              <animate
-                attributeName="opacity"
-                values="0.3;0.8;0.3"
-                dur="2s"
-                begin={`${i * 0.3}s`}
-                repeatCount="indefinite"
-              />
+          <g key={m.x}>
+            <line x1={m.x} y1="52" x2={m.x} y2="64" stroke="currentColor" strokeWidth="1" opacity="0.15">
+              <animate attributeName="opacity" values="0.15;0.6;0.15" dur={`${SCAN_DUR}s`} begin={begin} repeatCount="indefinite" />
             </line>
-            
-            {/* Outer node */}
             <circle
-              cx={x}
-              cy={y}
-              r="6"
-              fill="none"
-              stroke="currentColor"
+              cx={m.x}
+              cy="44"
+              r="5"
+              fill={m.accent ? ACCENT : "none"}
+              stroke={m.accent ? ACCENT : "currentColor"}
               strokeWidth="2"
+              opacity="0.18"
             >
-              <animate
-                attributeName="r"
-                values="6;8;6"
-                dur="2s"
-                begin={`${i * 0.3}s`}
-                repeatCount="indefinite"
-              />
+              <animate attributeName="opacity" values="0.18;1;0.18" dur={`${SCAN_DUR}s`} begin={begin} repeatCount="indefinite" />
+              <animate attributeName="r" values="5;6.5;5" dur={`${SCAN_DUR}s`} begin={begin} repeatCount="indefinite" />
             </circle>
           </g>
         );
       })}
-      
-      {/* Pulse rings */}
-      <circle cx="100" cy="80" r="30" fill="none" stroke="currentColor" strokeWidth="1" opacity="0">
-        <animate attributeName="r" values="20;60" dur="2s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.5;0" dur="2s" repeatCount="indefinite" />
-      </circle>
     </svg>
   );
 }
 
-function CollabVisual() {
+/** 02 · Телефония: звонок и сообщение приходят к ИИ-боту, он отвечает сам. */
+const CALL_PATH = "M50 50C74 50 84 74 108 74";
+const CHAT_PATH = "M56 116C80 116 86 90 108 90";
+/** Речь ИИ-оператора: у каждой полоски своя последовательность высот. */
+const BOT_BARS = [
+  { x: 116, h: [10, 26, 14, 10] },
+  { x: 124, h: [20, 10, 28, 20] },
+  { x: 132, h: [14, 24, 10, 14] },
+  { x: 140, h: [24, 12, 20, 24] },
+];
+
+function TelephonyVisual() {
   return (
     <svg viewBox="0 0 200 160" className="w-full h-full">
-      <g>
-        <rect
-          x="30"
-          y="50"
-          width="50"
-          height="60"
-          rx="4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <circle
-          cx="55"
-          cy="35"
-          r="12"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-      </g>
+      {/* Входящий звонок */}
+      <rect x="24" y="32" width="26" height="38" rx="6" fill="none" stroke="currentColor" strokeWidth="2" />
+      <rect x="30" y="40" width="14" height="2.5" rx="1.25" fill="currentColor" opacity="0.5" />
+      <circle cx="37" cy="62" r="2.5" fill="currentColor" opacity="0.5" />
 
-      <g>
-        <rect
-          x="120"
-          y="50"
-          width="50"
-          height="60"
-          rx="4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <circle
-          cx="145"
-          cy="35"
-          r="12"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-      </g>
-
-      <line
-        x1="80"
-        y1="80"
-        x2="120"
-        y2="80"
+      {/* Входящее сообщение. Пузырь и хвостик — один замкнутый контур: хвостик,
+          нарисованный отдельным штрихом поверх, торчал палочкой. */}
+      <path
+        d="M30 98H48A8 8 0 0 1 56 106V114A8 8 0 0 1 48 122H41L33 130L36 122H30A8 8 0 0 1 22 114V106A8 8 0 0 1 30 98Z"
+        fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        strokeDasharray="4 4"
-      >
-        <animate
-          attributeName="stroke-dashoffset"
-          values="0;-8"
-          dur="0.5s"
-          repeatCount="indefinite"
-        />
-      </line>
+        strokeLinejoin="round"
+      />
 
-      <circle r="4" fill="currentColor">
-        <animateMotion dur="1.5s" repeatCount="indefinite">
-          <mpath href="#dataPath" />
-        </animateMotion>
+      {/* Каналы */}
+      <path d={CALL_PATH} fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.2" />
+      <path d={CHAT_PATH} fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.2" />
+
+      {/* Обращения идут к боту */}
+      <path d={CALL_PATH} pathLength="1" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.18 0.82">
+        <animate attributeName="stroke-dashoffset" values="1;0" dur="2.6s" repeatCount="indefinite" />
+      </path>
+      <path d={CHAT_PATH} pathLength="1" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.18 0.82">
+        <animate attributeName="stroke-dashoffset" values="1;0" dur="2.6s" begin="0.9s" repeatCount="indefinite" />
+      </path>
+
+      {/* Ответы бота идут обратно — тем же путём, но в другую сторону */}
+      <path d={CALL_PATH} pathLength="1" fill="none" stroke={ACCENT} strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.14 0.86">
+        <animate attributeName="stroke-dashoffset" values="0;1" dur="2.6s" begin="1.3s" repeatCount="indefinite" />
+      </path>
+      <path d={CHAT_PATH} pathLength="1" fill="none" stroke={ACCENT} strokeWidth="2.6" strokeLinecap="round" strokeDasharray="0.14 0.86">
+        <animate attributeName="stroke-dashoffset" values="0;1" dur="2.6s" begin="2.2s" repeatCount="indefinite" />
+      </path>
+
+      {/* ИИ-оператор */}
+      <line x1="130" y1="56" x2="130" y2="46" stroke="currentColor" strokeWidth="2" />
+      <circle cx="130" cy="43" r="3" fill={ACCENT}>
+        <animate attributeName="opacity" values="1;0.35;1" dur="2.6s" repeatCount="indefinite" />
       </circle>
-      <path id="dataPath" d="M 80 80 L 120 80" fill="none" />
+      <rect x="108" y="56" width="44" height="44" rx="11" fill="none" stroke="currentColor" strokeWidth="2" />
+      {BOT_BARS.map((b, i) => (
+        <rect key={b.x} x={b.x} width="4" rx="2" fill={ACCENT} y={78 - b.h[0] / 2} height={b.h[0]}>
+          <animate attributeName="height" values={b.h.join(";")} dur="1.8s" begin={`${round3(i * 0.15)}s`} repeatCount="indefinite" />
+          <animate attributeName="y" values={b.h.map((h) => 78 - h / 2).join(";")} dur="1.8s" begin={`${round3(i * 0.15)}s`} repeatCount="indefinite" />
+        </rect>
+      ))}
+    </svg>
+  );
+}
 
-      <g transform="translate(100, 130)">
-        <circle r="6" fill="none" stroke="currentColor" strokeWidth="2">
-          <animate
-            attributeName="r"
-            values="6;10;6"
-            dur="1s"
-            repeatCount="indefinite"
-          />
+/** 03 · Дашборд: кабинет со статистикой и та же сводка в Telegram. */
+const DASH_BARS = [30, 48, 22, 60, 40];
+
+function DashboardVisual() {
+  return (
+    <svg viewBox="0 0 200 160" className="w-full h-full">
+      {/* Кабинет */}
+      <rect x="14" y="26" width="112" height="98" rx="7" fill="none" stroke="currentColor" strokeWidth="2" />
+      <line x1="14" y1="44" x2="126" y2="44" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
+      <circle cx="24" cy="35" r="2" fill="currentColor" opacity="0.45" />
+      <circle cx="32" cy="35" r="2" fill="currentColor" opacity="0.45" />
+      <circle cx="40" cy="35" r="2" fill="currentColor" opacity="0.45" />
+
+      {/* Статистика */}
+      {DASH_BARS.map((h, i) => {
+        const x = 26 + i * 19;
+        const top = 112 - h;
+        return (
+          <rect key={i} x={x} y="104" width="11" height="8" rx="2.5" fill={i === 3 ? ACCENT : "currentColor"} opacity={i === 3 ? 1 : 0.65}>
+            <animate attributeName="y" values={`104;${top};${top};104`} keyTimes="0;0.35;0.85;1" dur="3.4s" begin={`${round3(i * 0.12)}s`} repeatCount="indefinite" />
+            <animate attributeName="height" values={`8;${h};${h};8`} keyTimes="0;0.35;0.85;1" dur="3.4s" begin={`${round3(i * 0.12)}s`} repeatCount="indefinite" />
+          </rect>
+        );
+      })}
+
+      {/* Та же сводка уходит в Telegram */}
+      <line x1="126" y1="74" x2="146" y2="74" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity="0.35" />
+      <circle cy="74" r="2.6" fill={ACCENT}>
+        <animate attributeName="cx" values="126;146" dur="1.8s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.75;1" dur="1.8s" repeatCount="indefinite" />
+      </circle>
+
+      <rect x="146" y="38" width="42" height="74" rx="9" fill="none" stroke="currentColor" strokeWidth="2" />
+      <rect x="160" y="44" width="14" height="2.5" rx="1.25" fill="currentColor" opacity="0.4" />
+      <rect x="152" y="58" width="28" height="11" rx="5.5" fill="currentColor" opacity="0.25">
+        <animate attributeName="opacity" values="0;0.25;0.25" keyTimes="0;0.25;1" dur="3.6s" repeatCount="indefinite" />
+      </rect>
+      <rect x="152" y="75" width="30" height="11" rx="5.5" fill={ACCENT} opacity="0">
+        <animate attributeName="opacity" values="0;0;0.9;0.9" keyTimes="0;0.45;0.6;1" dur="3.6s" repeatCount="indefinite" />
+        <animate attributeName="width" values="10;10;30;30" keyTimes="0;0.45;0.6;1" dur="3.6s" repeatCount="indefinite" />
+      </rect>
+      <rect x="152" y="92" width="22" height="11" rx="5.5" fill="currentColor" opacity="0">
+        <animate attributeName="opacity" values="0;0;0.25;0.25" keyTimes="0;0.72;0.85;1" dur="3.6s" repeatCount="indefinite" />
+      </rect>
+    </svg>
+  );
+}
+
+/**
+ * 04 · Условия: счёт за подключение, где напротив каждой позиции — ноль.
+ * Две позиции и цикл 4с: на боксе 192×160 больше строк налезают друг на друга,
+ * а итог должен читаться сразу. Зубчатый низ читается как счёт, а не карточка.
+ */
+const BILL_PAPER =
+  "M44 16H156A10 10 0 0 1 166 26V128L160 136L154 128L148 136L142 128L136 136L130 128L124 136L118 128L112 136L106 128L100 136L94 128L88 136L82 128L76 136L70 128L64 136L58 128L52 136L46 128L40 136L34 128V26A10 10 0 0 1 44 16Z";
+/** Позиции счёта: ширина названия услуги и момент появления в цикле. */
+const BILL_ROWS = [
+  { y: 62, w: 48, at: 0.06 },
+  { y: 82, w: 36, at: 0.18 },
+];
+const BILL_DUR = "4s";
+
+function FreeIntegrationVisual() {
+  return (
+    <svg viewBox="0 0 200 160" className="w-full h-full">
+      <path d={BILL_PAPER} fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+
+      {/* Шапка счёта */}
+      <line x1="48" y1="40" x2="86" y2="40" stroke={ACCENT} strokeWidth="2.5" strokeLinecap="round" opacity="0.8" />
+
+      {/* Позиции: услуга, отбивка точками и ноль напротив */}
+      {BILL_ROWS.map((row) => (
+        <g key={row.y} opacity="0">
           <animate
             attributeName="opacity"
-            values="1;0.3;1"
-            dur="1s"
+            values="0;0;1;1;0"
+            keyTimes={`0;${row.at};${round3(row.at + 0.05)};0.85;1`}
+            dur={BILL_DUR}
             repeatCount="indefinite"
           />
-        </circle>
+          <line x1="48" y1={row.y} x2={48 + row.w} y2={row.y} stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity="0.32" />
+          <line
+            x1={48 + row.w + 6}
+            y1={row.y}
+            x2="126"
+            y2={row.y}
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeDasharray="0.5 4"
+            opacity="0.3"
+          />
+          <text x="150" y={row.y + 4.5} textAnchor="end" fontSize="13" fontWeight="300" fill="currentColor" opacity="0.55">
+            0
+          </text>
+        </g>
+      ))}
+
+      {/* Итог */}
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.3;0.38;0.85;1" dur={BILL_DUR} repeatCount="indefinite" />
+        <line x1="48" y1="102" x2="150" y2="102" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 4" opacity="0.35" />
+        <text x="150" y="121" textAnchor="end" fontSize="21" fontWeight="300" letterSpacing="-0.5" fill={ACCENT}>
+          0 ₽
+        </text>
       </g>
     </svg>
   );
 }
 
-function SecurityVisual() {
+/**
+ * 05 · Тариф: таймер отсчитывает фактическое время, и ровно столько ячеек
+ * оплачивается. Незаполненные остаются пустыми — это и есть «без пакетов».
+ */
+const SLOTS = 10;
+const SLOTS_USED = 6;
+const TARIFF_DUR = "6s";
+/** Общая для всех элементов заглушка на конец цикла, чтобы сброс не мигал. */
+const FADE_VALUES = "0;1;1;0;0";
+const FADE_KEYS = "0;0.02;0.85;0.95;1";
+
+function PerMinuteVisual() {
   return (
     <svg viewBox="0 0 200 160" className="w-full h-full">
-      {/* Shield */}
-      <path
-        d="M 100 20 L 150 40 L 150 90 Q 150 130 100 145 Q 50 130 50 90 L 50 40 Z"
+      {/* Циферблат */}
+      <circle cx="100" cy="60" r="30" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.35" />
+      <line x1="100" y1="33" x2="100" y2="38" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+      <line x1="127" y1="60" x2="122" y2="60" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+      <line x1="100" y1="87" x2="100" y2="82" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+      <line x1="73" y1="60" x2="78" y2="60" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+
+      {/* Отсчитанное время — дуга нарастает вместе со стрелкой */}
+      <circle
+        cx="100"
+        cy="60"
+        r="30"
+        pathLength="1"
         fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-      
-      {/* Inner shield */}
-      <path
-        d="M 100 35 L 135 50 L 135 85 Q 135 115 100 128 Q 65 115 65 85 L 65 50 Z"
-        fill="currentColor"
-        opacity="0.1"
-      >
-        <animate attributeName="opacity" values="0.1;0.2;0.1" dur="2s" repeatCount="indefinite" />
-      </path>
-      
-      {/* Lock icon */}
-      <rect x="85" y="70" width="30" height="25" rx="3" fill="currentColor" />
-      <path
-        d="M 90 70 L 90 60 Q 90 50 100 50 Q 110 50 110 60 L 110 70"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="3"
+        stroke={ACCENT}
+        strokeWidth="2.5"
         strokeLinecap="round"
-      />
-      
-      {/* Keyhole */}
-      <circle cx="100" cy="80" r="4" fill="white" />
-      <rect x="98" y="82" width="4" height="8" fill="white" />
-      
-      {/* Scan lines */}
-      <line x1="60" y1="60" x2="140" y2="60" stroke="currentColor" strokeWidth="1" opacity="0">
-        <animate attributeName="y1" values="40;120;40" dur="3s" repeatCount="indefinite" />
-        <animate attributeName="y2" values="40;120;40" dur="3s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0;0.5;0" dur="3s" repeatCount="indefinite" />
+        strokeDasharray="1 1"
+        strokeDashoffset="1"
+        transform="rotate(-90 100 60)"
+      >
+        <animate attributeName="stroke-dashoffset" values="1;0.4;0.4;0.4" keyTimes="0;0.54;0.85;1" dur={TARIFF_DUR} repeatCount="indefinite" />
+        <animate attributeName="opacity" values={FADE_VALUES} keyTimes={FADE_KEYS} dur={TARIFF_DUR} repeatCount="indefinite" />
+      </circle>
+
+      <line x1="100" y1="60" x2="100" y2="38" stroke={ACCENT} strokeWidth="2.4" strokeLinecap="round">
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 100 60;216 100 60;216 100 60;216 100 60"
+          keyTimes="0;0.54;0.85;1"
+          dur={TARIFF_DUR}
+          repeatCount="indefinite"
+        />
+        <animate attributeName="opacity" values={FADE_VALUES} keyTimes={FADE_KEYS} dur={TARIFF_DUR} repeatCount="indefinite" />
       </line>
+      <circle cx="100" cy="60" r="3.2" fill={ACCENT} opacity="0.9" />
+
+      {/* Ячейки оплаты: заполняются только те, что реально использованы */}
+      {Array.from({ length: SLOTS }, (_, i) => (
+        <rect key={i} x={29 + i * 15} y="110" width="8" height="16" rx="3" fill="none" stroke="currentColor" strokeWidth="1.6" opacity="0.25" />
+      ))}
+      {Array.from({ length: SLOTS_USED }, (_, i) => {
+        const at = round3((i + 1) * 0.09);
+        return (
+          <rect key={i} x={29 + i * 15} y="110" width="8" height="16" rx="3" fill={ACCENT} opacity="0">
+            <animate
+              attributeName="opacity"
+              values="0;0;1;1;0;0"
+              keyTimes={`0;${at};${round3(at + 0.02)};0.85;0.95;1`}
+              dur={TARIFF_DUR}
+              repeatCount="indefinite"
+            />
+          </rect>
+        );
+      })}
     </svg>
   );
 }
 
 function AnimatedVisual({ type }: { type: string }) {
   switch (type) {
-    case "deploy":
-      return <DeployVisual />;
-    case "ai":
-      return <AIVisual />;
-    case "collab":
-      return <CollabVisual />;
-    case "security":
-      return <SecurityVisual />;
+    case "analytics":
+      return <AnalyticsVisual />;
+    case "telephony":
+      return <TelephonyVisual />;
+    case "dashboard":
+      return <DashboardVisual />;
+    case "free":
+      return <FreeIntegrationVisual />;
+    case "perminute":
+      return <PerMinuteVisual />;
     default:
-      return <DeployVisual />;
+      return <AnalyticsVisual />;
   }
 }
 
