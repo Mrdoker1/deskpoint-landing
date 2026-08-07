@@ -10,8 +10,10 @@ import { ArrowRight, Check } from "lucide-react";
 export const PRICING_PLACEHOLDERS = {
   /** ₽ за минуту звонка */
   pricePerCallMinuteLabel: "[уточняется]",
-  /** ₽ за обработанное сообщение */
+  /** ₽ за обработанное сообщение в чате */
   pricePerMessageLabel: "[уточняется]",
+  /** ₽ за проанализированный диалог (звонок или переписка) */
+  pricePerAnalyzedDialogLabel: "[уточняется]",
   /**
    * Бесплатный старт: первые N минут звонков.
    * В обсуждении звучали 60 / 100 — финальное число за бизнесом.
@@ -31,47 +33,57 @@ export const PRICING_PLACEHOLDERS = {
   showIntegrationMarketAnchor: false,
 } as const;
 
+/**
+ * Три вида usage — ровно то, за что идёт оплата по факту. Аналитика вынесена
+ * отдельной позицией: она тарифицируется и в младшем пакете, где каналы клиента
+ * свои, поэтому свести её к минутам и сообщениям нельзя.
+ */
+const usageRates = [
+  { key: "calls", unit: "₽ за минуту звонка", price: "pricePerCallMinuteLabel" },
+  { key: "chats", unit: "₽ за сообщение в чате", price: "pricePerMessageLabel" },
+  {
+    key: "analytics",
+    unit: "₽ за разобранный диалог",
+    price: "pricePerAnalyzedDialogLabel",
+  },
+] as const;
+
+/**
+ * Два пакета лестницей: младший — только аналитика поверх ваших каналов,
+ * старший — то же плюс приём звонков и мессенджеров через ИИ. Скидка за комплект
+ * не нужна: старший пакет и есть комплект, а не третий вариант рядом.
+ */
 const featurePackages = [
   {
     id: "analytics",
     name: "Аналитика",
-    tagline: "Разбор и статистика",
+    tagline: "Поверх ваших каналов",
     description:
-      "Дашборд и ИИ-анализ диалогов — если каналы связи у вас уже есть, а нужен прозрачный разбор работы команды.",
+      "Если телефония и мессенджеры у вас уже есть и менять их незачем — подключаемся к ним и даём разбор работы команды.",
     features: [
       "Дашборд по операторам и отделу",
       "ИИ-анализ качества диалогов",
       "Проблемные обращения и выводы",
-      "Таблицы и отчёты без vanity-метрик",
+      "Отчёты и выгрузки без vanity-метрик",
+      "Бот и группа в Telegram для руководителей",
     ],
-    recommended: false,
-  },
-  {
-    id: "channels",
-    name: "Телефония и каналы",
-    tagline: "Единый приём обращений",
-    description:
-      "ИИ-обработка звонков, мессенджеров и виджета в одном кабинете — с базовыми метриками, без расширенной аналитики команды.",
-    features: [
-      "Телефония с записью и ИИ-разбором",
-      "Мессенджеры и виджет в одном инбоксе",
-      "Базовые метрики потока",
-      "Без прыжков между приложениями",
-    ],
+    note: "Каналы связи остаются вашими — мы к ним подключаемся.",
     recommended: false,
   },
   {
     id: "full",
-    name: "Аналитика + Телефония",
-    tagline: "Комплексный пакет",
+    name: "Аналитика + телефония и мессенджеры",
+    tagline: "Всё в одном кабинете",
     description:
-      "Оба столпа вместе: единая точка приёма и полная аналитика команды. Основной рекомендуемый вариант.",
+      "То же самое плюс приём обращений: ИИ отвечает на звонки и сообщения, а весь поток и его разбор живут в одном окне.",
     features: [
-      "Всё из «Телефония и каналы»",
-      "Всё из «Аналитика»",
-      "Единый кабинет без разрывов",
-      "Приоритетная настройка под старт",
+      "Всё из пакета «Аналитика»",
+      "Телефония с ИИ-оператором и записью",
+      "Мессенджеры и виджет в одном инбоксе",
+      "Единый кабинет без прыжков между приложениями",
+      "Приоритетная настройка на старте",
     ],
+    note: "Телефонию подключаем вашу или настраиваем через партнёров.",
     recommended: true,
   },
 ];
@@ -92,6 +104,11 @@ export function PricingSection() {
     return () => observer.disconnect();
   }, []);
 
+  const reveal = (delay: string) =>
+    `transition-all duration-700 ${delay} ${
+      isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+    }`;
+
   return (
     <section
       id="pricing"
@@ -99,137 +116,116 @@ export function PricingSection() {
       className="relative py-32 lg:py-40 border-t border-foreground/10"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div
-          className={`max-w-3xl mb-12 transition-all duration-700 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-        >
+        <div className={`max-w-3xl mb-12 ${reveal("")}`}>
           <span className="font-mono text-xs tracking-widest text-muted-foreground uppercase block mb-6">
             Тарифы
           </span>
           <h2 className="font-display text-5xl md:text-6xl tracking-tight text-foreground mb-6">
-            Оплата по факту использования,
+            Интеграция бесплатно,
             <br />
             <span className="text-muted-foreground">
-              пакеты — по набору функций.
+              платите только за использование.
             </span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
-            Нет уровней «малый / средний / большой поток». Считаем минуты звонков
-            и обработанные сообщения; сверху выбираете пакет функций — аналитика,
-            каналы или оба вместе.
+            Нет абонентской платы и уровней «малый / средний / большой поток».
+            Считаем минуты звонков, сообщения в чатах и разобранные диалоги.
+            Пакет выбираете один из двух — он задаёт набор функций, а не объём.
           </p>
         </div>
 
-        {/* Usage rates */}
+        {/* Бесплатная интеграция — отдельный тезис, а не часть usage */}
         <div
-          className={`mb-10 border border-foreground/15 p-6 lg:p-8 transition-all duration-700 delay-75 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-        >
-          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground mb-4">
-            Базовый принцип · usage
-          </p>
-          <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-baseline gap-3 sm:gap-x-8 sm:gap-y-2">
-            <p className="font-display text-2xl lg:text-3xl tracking-tight">
-              {p.pricePerCallMinuteLabel}{" "}
-              <span className="text-lg text-muted-foreground font-sans">
-                ₽ за минуту звонка
-              </span>
-            </p>
-            <span className="hidden sm:inline text-muted-foreground/50" aria-hidden>
-              ·
-            </span>
-            <p className="font-display text-2xl lg:text-3xl tracking-tight">
-              {p.pricePerMessageLabel}{" "}
-              <span className="text-lg text-muted-foreground font-sans">
-                ₽ за обработанное сообщение
-              </span>
-            </p>
-          </div>
-          <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-2xl">
-            Точные ставки согласуются отдельно и подставляются в одно место в
-            коде. Пакеты ниже не ограничивают объём — они задают набор функций.
-          </p>
-        </div>
-
-        {/* Free start */}
-        <div
-          className={`mb-14 border-2 border-primary/40 bg-primary/[0.06] p-6 lg:p-8 transition-all duration-700 delay-100 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
+          className={`mb-10 border-2 border-primary/40 bg-primary/[0.06] p-6 lg:p-8 ${reveal(
+            "delay-75"
+          )}`}
         >
           <p className="font-mono text-[11px] uppercase tracking-widest text-primary mb-3">
-            Бесплатный старт
+            Подключение
           </p>
-          <h3 className="font-display text-2xl lg:text-3xl tracking-tight mb-4">
-            Интеграция бесплатно · первый период без оплаты usage
+          <h3 className="font-display text-2xl lg:text-3xl tracking-tight mb-3">
+            Интеграция и настройка — бесплатно
           </h3>
-          <ul className="space-y-3 text-muted-foreground leading-relaxed max-w-3xl">
-            <li className="flex gap-3">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-              <span>
-                Интеграция и настройка — бесплатно для первых клиентов: нам тоже
-                важен ваш результат на реальном потоке.
-                {p.showIntegrationMarketAnchor ? (
-                  <>
-                    {" "}
-                    Обычно интеграция такого уровня стоит от{" "}
-                    <span className="text-foreground font-medium">
-                      {p.integrationMarketAnchorLabel} ₽
-                    </span>{" "}
-                    в зависимости от объёма.
-                  </>
-                ) : (
-                  <>
-                    {" "}
-                    <span className="font-mono text-xs text-foreground/70">
-                      {/* TODO(business): включить showIntegrationMarketAnchor и
-                          задать integrationMarketAnchorLabel, если публикуем якорь */}
-                      [якорь «от … ₽» — на согласовании]
-                    </span>
-                  </>
-                )}
-              </span>
-            </li>
-            <li className="flex gap-3">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-              <span>
-                Первые{" "}
+          <p className="text-muted-foreground leading-relaxed max-w-3xl">
+            Подключаем каналы, настраиваем ИИ под ваши сценарии и заводим команду
+            в кабинет — без оплаты и без обязательств. Понравится результат на
+            реальном потоке — продолжаете работать, нет — ничего не платите.
+            {p.showIntegrationMarketAnchor ? (
+              <>
+                {" "}
+                Обычно интеграция такого уровня стоит от{" "}
                 <span className="text-foreground font-medium">
-                  {p.freeCallMinutes} минут
+                  {p.integrationMarketAnchorLabel} ₽
                 </span>{" "}
-                звонков и первые{" "}
-                <span className="text-foreground font-medium">
-                  {p.freeMessages} сообщений
-                </span>{" "}
-                — бесплатно.{" "}
-                <span className="font-mono text-xs">
-                  {/* TODO(business): заменить freeCallMinutes / freeMessages */}
-                  [N и M — плейсхолдеры]
+                в зависимости от объёма.
+              </>
+            ) : (
+              <>
+                {" "}
+                <span className="font-mono text-xs text-foreground/70">
+                  {/* TODO(business): включить showIntegrationMarketAnchor и
+                      задать integrationMarketAnchorLabel, если публикуем якорь */}
+                  [якорь «от … ₽» — на согласовании]
                 </span>
-              </span>
-            </li>
-          </ul>
-        </div>
-
-        {/* Feature packages */}
-        <div className="mb-6">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground mb-6">
-            Пакеты по набору функций
+              </>
+            )}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-px bg-foreground/10">
+        {/* Usage: три позиции */}
+        <div
+          className={`mb-14 border border-foreground/15 p-6 lg:p-8 ${reveal(
+            "delay-100"
+          )}`}
+        >
+          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground mb-6">
+            Оплата по факту · usage
+          </p>
+          <div className="grid gap-6 sm:grid-cols-3 sm:gap-8">
+            {usageRates.map((rate) => (
+              <div key={rate.key}>
+                <p className="font-display text-2xl lg:text-3xl tracking-tight">
+                  {p[rate.price]}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{rate.unit}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-sm text-muted-foreground leading-relaxed max-w-2xl">
+            Первые{" "}
+            <span className="text-foreground font-medium">
+              {p.freeCallMinutes} минут
+            </span>{" "}
+            звонков и{" "}
+            <span className="text-foreground font-medium">
+              {p.freeMessages} сообщений
+            </span>{" "}
+            — бесплатно.{" "}
+            <span className="font-mono text-xs">
+              {/* TODO(business): заменить ставки, freeCallMinutes и freeMessages */}
+              [ставки и лимиты — плейсхолдеры]
+            </span>
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+            Два пакета по набору функций
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-px bg-foreground/10">
           {featurePackages.map((pkg, idx) => (
             <div
               key={pkg.id}
-              className={`relative p-8 lg:p-10 bg-background transition-all duration-700 ${
+              className={`relative flex flex-col p-8 lg:p-10 bg-background transition-all duration-700 ${
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
               } ${
-                pkg.recommended ? "md:-my-4 md:py-12 border-2 border-primary z-[1]" : ""
+                pkg.recommended
+                  ? "md:-my-4 md:py-12 border-2 border-primary z-[1]"
+                  : ""
               }`}
               style={{ transitionDelay: `${150 + idx * 120}ms` }}
             >
@@ -243,7 +239,7 @@ export function PricingSection() {
                 <span className="font-mono text-xs text-muted-foreground">
                   {String(idx + 1).padStart(2, "0")}
                 </span>
-                <h3 className="font-display text-3xl text-foreground mt-2">
+                <h3 className="font-display text-3xl text-foreground mt-2 leading-tight">
                   {pkg.name}
                 </h3>
                 <p className="text-sm font-medium text-primary mt-2">
@@ -256,27 +252,33 @@ export function PricingSection() {
 
               <div className="mb-8 pb-8 border-b border-foreground/10">
                 <span className="font-display text-xl text-foreground">
-                  Usage + пакет
+                  Интеграция 0 ₽ + usage
                 </span>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Минуты и сообщения — по факту; функции — по пакету
+                  Подключение бесплатно, дальше — только за использованное
                 </p>
               </div>
 
-              <ul className="space-y-4 mb-10">
+              <ul className="space-y-4 mb-8">
                 {pkg.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
                     <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                    <span className="text-sm text-muted-foreground">{feature}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {feature}
+                    </span>
                   </li>
                 ))}
               </ul>
 
+              <p className="mb-8 text-sm text-muted-foreground/80 leading-relaxed">
+                {pkg.note}
+              </p>
+
               <a
                 href="#lead"
-                className={`w-full py-4 flex items-center justify-center gap-2 text-sm font-medium transition-all group rounded-full ${
+                className={`mt-auto w-full py-4 flex items-center justify-center gap-2 text-sm font-medium transition-all group rounded-full ${
                   pkg.recommended
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
+                    ? "bg-primary text-primary-foreground hover:bg-[color-mix(in_oklch,var(--dp-primary)_90%,var(--dp-background))] shadow-lg"
                     : "border border-foreground/20 text-foreground hover:border-primary/50 hover:bg-primary/10"
                 }`}
               >
