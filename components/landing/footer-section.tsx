@@ -41,7 +41,7 @@ export function FooterSection() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-12 lg:gap-8">
             <div className="col-span-2">
               <a href={withBase("/")} className="inline-flex items-center gap-2 mb-6">
-                <Logo className="text-[26px]" />
+                <Logo className="text-[26px]" /> {/* 63px — в футере места больше, чем в баре шапки */}
               </a>
               <p className="text-muted-foreground leading-relaxed mb-8 max-w-xs">
                 Аналитика команды поддержки и все каналы связи в одном кабинете
