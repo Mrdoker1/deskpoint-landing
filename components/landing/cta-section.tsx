@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { withBase } from "@/lib/base-path";
+import { LOGO_ACCENT, LOGO_SPARK, SPARK_BOX } from "@/lib/logo-mark";
 import { ArrowRight } from "lucide-react";
 
 type SubmitState = "idle" | "loading" | "success" | "error";
@@ -127,19 +127,22 @@ export function CtaSection() {
               </p>
 
               {/*
-                Вместо вращающейся ASCII-пирамиды — тот же рисунок «потоки в
-                точку», что на первом экране: одинаковая монолинейная графика по
-                всей странице. Живёт в пустоте под текстом (столбец с формой
-                выше), с вылетом за левый край карточки — она overflow-hidden.
-                Ниже lg столбцы складываются, свободного места нет, поэтому там
-                рисунок не показываем.
+                Звезда из знака вместо hero-flows.svg: тот был нарисован под
+                первый экран, и сжатый до 420px давал волосяные линии по 1.1px —
+                при полупрозрачности от них оставалась дымка. Плюс при высоте
+                480px он накрывал весь столбец: столбец в grid растягивается на
+                высоту строки, поэтому привязка к низу не спасала. Звезда —
+                сплошная фигура, чёткая в любом размере, и садится в реально
+                пустой левый низ карточки. Ниже lg столбцы складываются, места
+                нет — там не показываем.
               */}
-              <img
-                src={withBase("/hero-flows.svg")}
-                alt=""
+              <svg
+                viewBox={`${SPARK_BOX.x} ${SPARK_BOX.y} ${SPARK_BOX.w} ${SPARK_BOX.h}`}
                 aria-hidden="true"
-                className="pointer-events-none absolute -bottom-16 -left-24 hidden w-[420px] select-none opacity-40 lg:block"
-              />
+                className="pointer-events-none absolute bottom-0 left-0 hidden h-32 w-32 select-none opacity-[0.13] lg:block"
+              >
+                <path d={LOGO_SPARK} fill={LOGO_ACCENT} />
+              </svg>
             </div>
 
             <div className="relative">
