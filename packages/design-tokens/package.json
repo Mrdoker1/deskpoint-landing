@@ -1,0 +1,15 @@
+{
+  "name": "@deskpoint/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./tokens.css": "./tokens.css",
+    "./shadcn.css": "./shadcn.css",
+    "./theme.css": "./theme.css"
+  },
+  "files": [
+    "tokens.css",
+    "shadcn.css",
+    "theme.css"
+  ]
+}

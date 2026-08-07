@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180" fill="none" role="img" aria-label="Deskpoint">
+  <style>
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #080503; }
+      .fg { fill: #fafaf9; }
+    }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #fafaf9; }
+      .fg { fill: #080503; }
+    }
+  </style>
+  <rect class="bg" width="180" height="180" rx="37"/>
+  <text class="fg" x="90" y="118" text-anchor="middle" font-family="system-ui, Manrope, sans-serif" font-size="96" font-weight="700" letter-spacing="-4">D</text>
+</svg>

@@ -1,0 +1,46 @@
+/*
+  shadcn/ui semantic layer.
+
+  Maps `--dp-*` primitives onto the variable names shadcn components expect
+  (`--background`, `--primary`, `--radius`, …). References stay as `var()` so an
+  app overriding a `--dp-*` token in its own `:root` flows through automatically.
+*/
+
+:root {
+  --background: var(--dp-background);
+  --foreground: var(--dp-foreground);
+  --card: var(--dp-card);
+  --card-foreground: var(--dp-card-foreground);
+  --popover: var(--dp-popover);
+  --popover-foreground: var(--dp-popover-foreground);
+  --primary: var(--dp-primary);
+  --primary-foreground: var(--dp-primary-foreground);
+  --secondary: var(--dp-secondary);
+  --secondary-foreground: var(--dp-secondary-foreground);
+  --muted: var(--dp-muted);
+  --muted-foreground: var(--dp-muted-foreground);
+  --accent: var(--dp-accent);
+  --accent-foreground: var(--dp-accent-foreground);
+  --destructive: var(--dp-destructive);
+  --destructive-foreground: var(--dp-destructive-foreground);
+  --border: var(--dp-border);
+  --input: var(--dp-input);
+  --ring: var(--dp-ring);
+
+  --chart-1: var(--dp-chart-1);
+  --chart-2: var(--dp-chart-2);
+  --chart-3: var(--dp-chart-3);
+  --chart-4: var(--dp-chart-4);
+  --chart-5: var(--dp-chart-5);
+
+  --sidebar: var(--dp-sidebar);
+  --sidebar-foreground: var(--dp-sidebar-foreground);
+  --sidebar-primary: var(--dp-sidebar-primary);
+  --sidebar-primary-foreground: var(--dp-sidebar-primary-foreground);
+  --sidebar-accent: var(--dp-sidebar-accent);
+  --sidebar-accent-foreground: var(--dp-sidebar-accent-foreground);
+  --sidebar-border: var(--dp-sidebar-border);
+  --sidebar-ring: var(--dp-sidebar-ring);
+
+  --radius: var(--dp-radius);
+}

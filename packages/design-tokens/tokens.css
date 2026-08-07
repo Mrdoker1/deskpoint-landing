@@ -1,0 +1,103 @@
+/*
+  Deskpoint design tokens — raw primitives.
+
+  Everything here is a `--dp-*` custom property. Products consume them through
+  shadcn.css (semantic aliases) and theme.css (Tailwind theme keys), and may
+  override any single token in their own `:root` without touching this file.
+*/
+
+:root {
+  /* Surfaces & text — warm espresso on mocha */
+  --dp-background: oklch(0.88 0.018 72);
+  --dp-foreground: oklch(0.30 0.045 52);
+  --dp-card: oklch(0.91 0.016 74);
+  --dp-card-foreground: oklch(0.30 0.045 52);
+  --dp-popover: oklch(0.91 0.016 74);
+  --dp-popover-foreground: oklch(0.30 0.045 52);
+
+  /* Brand / CTA */
+  --dp-primary: oklch(0.44 0.075 48);
+  --dp-primary-foreground: oklch(0.96 0.015 80);
+  --dp-secondary: oklch(0.84 0.022 70);
+  --dp-secondary-foreground: oklch(0.30 0.045 52);
+  --dp-muted: oklch(0.83 0.02 68);
+  --dp-muted-foreground: oklch(0.48 0.04 55);
+  --dp-accent: oklch(0.82 0.03 65);
+  --dp-accent-foreground: oklch(0.30 0.045 52);
+  --dp-destructive: oklch(0.55 0.19 27);
+  --dp-destructive-foreground: oklch(0.97 0.01 80);
+
+  /* Lines & focus */
+  --dp-border: oklch(0.76 0.025 65);
+  --dp-input: oklch(0.84 0.022 70);
+  --dp-ring: oklch(0.44 0.075 48);
+
+  /* Charts */
+  --dp-chart-1: oklch(0.44 0.075 48);
+  --dp-chart-2: oklch(0.38 0.07 45);
+  --dp-chart-3: oklch(0.55 0.08 55);
+  --dp-chart-4: oklch(0.65 0.06 70);
+  --dp-chart-5: oklch(0.75 0.04 75);
+
+  /* Sidebar */
+  --dp-sidebar: oklch(0.88 0.018 72);
+  --dp-sidebar-foreground: oklch(0.30 0.045 52);
+  --dp-sidebar-primary: oklch(0.44 0.075 48);
+  --dp-sidebar-primary-foreground: oklch(0.96 0.015 80);
+  --dp-sidebar-accent: oklch(0.84 0.022 70);
+  --dp-sidebar-accent-foreground: oklch(0.30 0.045 52);
+  --dp-sidebar-border: oklch(0.76 0.025 65);
+  --dp-sidebar-ring: oklch(0.44 0.075 48);
+
+  /* Buttons */
+  --dp-btn-primary-bg: var(--dp-primary);
+  --dp-btn-primary-fg: var(--dp-primary-foreground);
+  --dp-btn-primary-hover: color-mix(in oklch, var(--dp-primary) 88%, black);
+
+  /* Shape */
+  --dp-radius: 0.625rem;
+
+  /* Typography — apps bind these to their own loaded font variables */
+  --dp-font-sans: var(--font-instrument, ui-sans-serif, system-ui, sans-serif);
+  --dp-font-mono: var(--font-jetbrains, ui-monospace, SFMono-Regular, monospace);
+  --dp-font-display: var(--dp-font-sans);
+}
+
+.dark {
+  --dp-background: oklch(0.24 0.028 50);
+  --dp-foreground: oklch(0.92 0.018 78);
+  --dp-card: oklch(0.28 0.03 50);
+  --dp-card-foreground: oklch(0.92 0.018 78);
+  --dp-popover: oklch(0.28 0.03 50);
+  --dp-popover-foreground: oklch(0.92 0.018 78);
+
+  --dp-primary: oklch(0.62 0.09 50);
+  --dp-primary-foreground: oklch(0.20 0.03 48);
+  --dp-secondary: oklch(0.33 0.03 52);
+  --dp-secondary-foreground: oklch(0.92 0.018 78);
+  --dp-muted: oklch(0.33 0.03 52);
+  --dp-muted-foreground: oklch(0.72 0.03 65);
+  --dp-accent: oklch(0.36 0.035 52);
+  --dp-accent-foreground: oklch(0.92 0.018 78);
+  --dp-destructive: oklch(0.62 0.18 27);
+  --dp-destructive-foreground: oklch(0.97 0.01 80);
+
+  --dp-border: oklch(0.38 0.03 52);
+  --dp-input: oklch(0.38 0.03 52);
+  --dp-ring: oklch(0.62 0.09 50);
+
+  --dp-chart-1: oklch(0.62 0.09 50);
+  --dp-chart-2: oklch(0.55 0.08 45);
+  --dp-chart-3: oklch(0.68 0.07 60);
+  --dp-chart-4: oklch(0.75 0.05 72);
+  --dp-chart-5: oklch(0.82 0.035 78);
+
+  --dp-sidebar: oklch(0.28 0.03 50);
+  --dp-sidebar-foreground: oklch(0.92 0.018 78);
+  --dp-sidebar-primary: oklch(0.62 0.09 50);
+  --dp-sidebar-primary-foreground: oklch(0.20 0.03 48);
+  --dp-sidebar-accent: oklch(0.36 0.035 52);
+  --dp-sidebar-accent-foreground: oklch(0.92 0.018 78);
+  --dp-sidebar-border: oklch(0.38 0.03 52);
+  --dp-sidebar-ring: oklch(0.62 0.09 50);
+}

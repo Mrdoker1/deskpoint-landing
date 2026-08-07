@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="800" viewBox="0 0 620 800" fill="none" aria-hidden="true">
+  <style>
+    /* Pulses travel along the same curves as the static lines and die out at
+       the hub. Everything is slow and low-contrast so the headline stays first
+       in the reading order. */
+    .pulse {
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 0.10 0.90;
+      animation: flow linear infinite;
+    }
+    @keyframes flow {
+      from { stroke-dashoffset: 1; }
+      to   { stroke-dashoffset: 0; }
+    }
+    .ring-crawl { animation: crawl 26s linear infinite; }
+    @keyframes crawl {
+      from { stroke-dashoffset: 0; }
+      to   { stroke-dashoffset: 96; }
+    }
+    .ping { animation: ping 5.5s cubic-bezier(0.2, 0.6, 0.3, 1) infinite; }
+    @keyframes ping {
+      0%        { r: 44; stroke-opacity: 0.5; }
+      70%, 100% { r: 92; stroke-opacity: 0; }
+    }
+    .hub { animation: hub 5.5s ease-in-out infinite; }
+    @keyframes hub {
+      0%, 100% { r: 15; }
+      50%      { r: 16.6; }
+    }
+    .twinkle { animation: twinkle 7s ease-in-out infinite; }
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.35; }
+    }
+    .emit { animation: emit 6.5s ease-in-out infinite; }
+    @keyframes emit {
+      0%, 100% { stroke-opacity: 0.25; }
+      50%      { stroke-opacity: 0.7; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pulse, .ring-crawl, .ping, .hub, .twinkle, .emit { animation: none; }
+      .pulse { display: none; }
+    }
+  </style>
+  <path class="pulse" d="M -30 60 C 220 90, 420 90, 660 130" pathLength="1" stroke="#74452c" stroke-opacity="0.5" stroke-width="2.2" style="animation-duration:12.0s;animation-delay:-0.0s"/>
+  <path class="pulse" d="M -30 200 C 220 230, 420 210, 660 250" pathLength="1" stroke="#74452c" stroke-opacity="0.5" stroke-width="2.2" style="animation-duration:9.0s;animation-delay:-3.1s"/>
+  <path class="pulse" d="M -30 330 C 220 360, 420 320, 660 360" pathLength="1" stroke="#74452c" stroke-opacity="0.5" stroke-width="2.2" style="animation-duration:8.2s;animation-delay:-5.0s"/>
+  <path class="pulse" d="M -30 470 C 220 500, 420 390, 660 430" pathLength="1" stroke="#74452c" stroke-opacity="0.5" stroke-width="2.2" style="animation-duration:10.8s;animation-delay:-1.7s"/>
+  <path class="pulse" d="M -30 610 C 220 640, 420 500, 660 540" pathLength="1" stroke="#74452c" stroke-opacity="0.5" stroke-width="2.2" style="animation-duration:13.0s;animation-delay:-4.2s"/>
+  <path class="pulse" d="M -30 740 C 220 770, 420 610, 660 650" pathLength="1" stroke="#74452c" stroke-opacity="0.5" stroke-width="2.2" style="animation-duration:11.5s;animation-delay:-6.4s"/>
+  <path class="pulse" d="M -30 385 C 240 430, 430 390, 660 405" pathLength="1" stroke="#74452c" stroke-opacity="0.85" stroke-width="3" style="animation-duration:7.5s;animation-delay:-2.8s;stroke-dasharray:0.14 0.86"/>
+<path d="M -30 60 C 220 90, 420 90, 660 130" stroke="#402718" stroke-opacity="0.1" stroke-width="1.8" fill="none"/>
+<path d="M -30 200 C 220 230, 420 210, 660 250" stroke="#402718" stroke-opacity="0.16" stroke-width="1.8" fill="none"/>
+<path d="M -30 330 C 220 360, 420 320, 660 360" stroke="#402718" stroke-opacity="0.22" stroke-width="1.8" fill="none"/>
+<path d="M -30 470 C 220 500, 420 390, 660 430" stroke="#402718" stroke-opacity="0.15" stroke-width="1.8" fill="none"/>
+<path d="M -30 610 C 220 640, 420 500, 660 540" stroke="#402718" stroke-opacity="0.1" stroke-width="1.8" fill="none"/>
+<path d="M -30 740 C 220 770, 420 610, 660 650" stroke="#402718" stroke-opacity="0.08" stroke-width="1.8" fill="none"/>
+<path d="M -30 385 C 240 430, 430 390, 660 405" stroke="#74452c" stroke-opacity=".55" stroke-width="2.2" fill="none"/>
+<circle class="twinkle" style="animation-delay:-1.1s" cx="90" cy="165" r="2.5" fill="#402718" fill-opacity="0.3"/>
+<circle class="twinkle" style="animation-delay:-2.2s" cx="230" cy="290" r="3" fill="#402718" fill-opacity="0.3"/>
+<circle class="twinkle" style="animation-delay:-3.3s" cx="150" cy="395" r="3.5" fill="#402718" fill-opacity="0.38"/>
+<circle class="twinkle" style="animation-delay:-4.4s" cx="350" cy="415" r="2.5" fill="#402718" fill-opacity="0.35"/>
+<circle class="twinkle" style="animation-delay:-5.5s" cx="300" cy="555" r="2.5" fill="#402718" fill-opacity="0.25"/>
+<circle class="twinkle" style="animation-delay:-6.6s" cx="480" cy="470" r="2" fill="#402718" fill-opacity="0.3"/>
+<circle class="twinkle" style="animation-delay:-7.7s" cx="420" cy="640" r="3" fill="#402718" fill-opacity="0.22"/>
+<circle cx="255" cy="418" r="4" fill="#74452c" fill-opacity=".8"/>
+<circle class="emit" style="animation-delay:-2.1s" cx="52" cy="128" r="9" stroke="#402718" stroke-opacity=".4" stroke-width="2" fill="none"/>
+<circle class="emit" style="animation-delay:-4.2s" cx="36" cy="384" r="11" stroke="#74452c" stroke-opacity=".6" stroke-width="2.2" fill="none"/>
+<circle class="emit" style="animation-delay:-6.3s" cx="70" cy="612" r="8" stroke="#402718" stroke-opacity=".3" stroke-width="2" fill="none"/>
+</svg>

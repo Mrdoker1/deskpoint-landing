@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="800" viewBox="0 0 700 800" fill="none" aria-hidden="true">
+  <style>
+    /* Pulses travel along the same curves as the static lines and die out at
+       the hub. Everything is slow and low-contrast so the headline stays first
+       in the reading order. */
+    .pulse {
+      fill: none;
+      stroke-linecap: round;
+      stroke-dasharray: 0.10 0.90;
+      animation: flow linear infinite;
+    }
+    @keyframes flow {
+      from { stroke-dashoffset: 1; }
+      to   { stroke-dashoffset: 0; }
+    }
+    .ring-crawl { animation: crawl 26s linear infinite; }
+    @keyframes crawl {
+      from { stroke-dashoffset: 0; }
+      to   { stroke-dashoffset: 96; }
+    }
+    .ping { animation: ping 5.5s cubic-bezier(0.2, 0.6, 0.3, 1) infinite; }
+    @keyframes ping {
+      0%        { r: 44; stroke-opacity: 0.5; }
+      70%, 100% { r: 92; stroke-opacity: 0; }
+    }
+    .hub { animation: hub 5.5s ease-in-out infinite; }
+    @keyframes hub {
+      0%, 100% { r: 15; }
+      50%      { r: 16.6; }
+    }
+    .twinkle { animation: twinkle 7s ease-in-out infinite; }
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.35; }
+    }
+    .emit { animation: emit 6.5s ease-in-out infinite; }
+    @keyframes emit {
+      0%, 100% { stroke-opacity: 0.25; }
+      50%      { stroke-opacity: 0.7; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pulse, .ring-crawl, .ping, .hub, .twinkle, .emit { animation: none; }
+      .pulse { display: none; }
+    }
+  </style>
+  <path class="pulse" d="M -30 60 C 270.0 90, 190.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:13.0s;animation-delay:-0.0s"/>
+  <path class="pulse" d="M -30 210 C 270.0 240, 190.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:9.5s;animation-delay:-2.4s"/>
+  <path class="pulse" d="M -30 380 C 270.0 410, 190.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:8.0s;animation-delay:-4.1s"/>
+  <path class="pulse" d="M -30 560 C 270.0 590, 190.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:11.0s;animation-delay:-1.2s"/>
+  <path class="pulse" d="M -30 720 C 270.0 750, 190.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:14.0s;animation-delay:-5.6s"/>
+  <path class="pulse" d="M 140 -30 C 355.0 0, 275.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:10.5s;animation-delay:-3.3s"/>
+  <path class="pulse" d="M 380 -30 C 475.0 0, 395.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:8.8s;animation-delay:-6.2s"/>
+  <path class="pulse" d="M 620 -30 C 595.0 0, 515.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:12.5s;animation-delay:-0.9s"/>
+  <path class="pulse" d="M 200 830 C 385.0 860, 305.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:10.0s;animation-delay:-4.8s"/>
+  <path class="pulse" d="M 500 830 C 535.0 860, 455.0 380, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.55" stroke-width="2.2" style="animation-duration:12.0s;animation-delay:-2.0s"/>
+  <path class="pulse" d="M -30 300 C 170 340, 300 280, 470 400" pathLength="1" stroke="#74452c" stroke-opacity="0.9" stroke-width="3" style="animation-duration:7s;animation-delay:-1.5s;stroke-dasharray:0.14 0.86"/>
+<path d="M -30 60 C 270.0 90, 190.0 380, 470 400" stroke="#402718" stroke-opacity="0.1" stroke-width="1.8" fill="none"/>
+<path d="M -30 210 C 270.0 240, 190.0 380, 470 400" stroke="#402718" stroke-opacity="0.16" stroke-width="1.8" fill="none"/>
+<path d="M -30 380 C 270.0 410, 190.0 380, 470 400" stroke="#402718" stroke-opacity="0.22" stroke-width="1.8" fill="none"/>
+<path d="M -30 560 C 270.0 590, 190.0 380, 470 400" stroke="#402718" stroke-opacity="0.16" stroke-width="1.8" fill="none"/>
+<path d="M -30 720 C 270.0 750, 190.0 380, 470 400" stroke="#402718" stroke-opacity="0.1" stroke-width="1.8" fill="none"/>
+<path d="M 140 -30 C 355.0 0, 275.0 380, 470 400" stroke="#402718" stroke-opacity="0.12" stroke-width="1.8" fill="none"/>
+<path d="M 380 -30 C 475.0 0, 395.0 380, 470 400" stroke="#402718" stroke-opacity="0.18" stroke-width="1.8" fill="none"/>
+<path d="M 620 -30 C 595.0 0, 515.0 380, 470 400" stroke="#402718" stroke-opacity="0.1" stroke-width="1.8" fill="none"/>
+<path d="M 200 830 C 385.0 860, 305.0 380, 470 400" stroke="#402718" stroke-opacity="0.14" stroke-width="1.8" fill="none"/>
+<path d="M 500 830 C 535.0 860, 455.0 380, 470 400" stroke="#402718" stroke-opacity="0.12" stroke-width="1.8" fill="none"/>
+<path d="M -30 300 C 170 340, 300 280, 470 400" stroke="#74452c" stroke-opacity=".6" stroke-width="2.2" fill="none"/>
+<circle class="twinkle" style="animation-delay:-1.3s" cx="120" cy="140" r="2.5" fill="#402718" fill-opacity="0.3"/>
+<circle class="twinkle" style="animation-delay:-2.6s" cx="250" cy="200" r="3" fill="#402718" fill-opacity="0.28"/>
+<circle class="twinkle" style="animation-delay:-3.9s" cx="180" cy="320" r="3.5" fill="#402718" fill-opacity="0.4"/>
+<circle class="twinkle" style="animation-delay:-5.2s" cx="330" cy="470" r="2.5" fill="#402718" fill-opacity="0.3"/>
+<circle class="twinkle" style="animation-delay:-6.5s" cx="420" cy="160" r="2" fill="#402718" fill-opacity="0.3"/>
+<circle class="twinkle" style="animation-delay:-7.8s" cx="280" cy="640" r="3" fill="#402718" fill-opacity="0.25"/>
+<circle cx="300" cy="308" r="4" fill="#74452c" fill-opacity=".8"/>
+<circle class="ping" cx="470" cy="400" r="44" stroke="#74452c" stroke-width="2" fill="none"/>
+<circle cx="470" cy="400" r="44" stroke="#402718" stroke-opacity=".65" stroke-width="3" fill="none"/>
+<circle class="ring-crawl" cx="470" cy="400" r="68" stroke="#402718" stroke-opacity=".16" stroke-width="1.5" stroke-dasharray="3 9" fill="none"/>
+<circle class="hub" cx="470" cy="400" r="15" fill="#74452c"/>
+</svg>
