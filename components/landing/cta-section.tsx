@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LOGO_ACCENT, LOGO_SPARK, SPARK_BOX } from "@/lib/logo-mark";
+import { withBase } from "@/lib/base-path";
 import { ArrowRight } from "lucide-react";
 
 type SubmitState = "idle" | "loading" | "success" | "error";
@@ -108,7 +108,9 @@ export function CtaSection() {
             начинаются на той же высоте, что и заголовок.
           */}
           <div className="relative z-10 grid gap-10 px-6 py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:gap-16 lg:px-12 lg:py-16">
-            <div className="relative flex flex-col">
+            {/* lg:pb-28 резервирует полосу под рисунок: текст физически не может
+                в неё войти, поэтому наезд исключён при любой ширине. */}
+            <div className="relative flex flex-col lg:pb-28">
               <h2 className="text-3xl lg:text-5xl font-display tracking-tight leading-[1.02]">
                 Оставьте заявку — покажем Deskpoint на ваших обращениях.
               </h2>
@@ -127,22 +129,28 @@ export function CtaSection() {
               </p>
 
               {/*
-                Звезда из знака вместо hero-flows.svg: тот был нарисован под
-                первый экран, и сжатый до 420px давал волосяные линии по 1.1px —
-                при полупрозрачности от них оставалась дымка. Плюс при высоте
-                480px он накрывал весь столбец: столбец в grid растягивается на
-                высоту строки, поэтому привязка к низу не спасала. Звезда —
-                сплошная фигура, чёткая в любом размере, и садится в реально
-                пустой левый низ карточки. Ниже lg столбцы складываются, места
-                нет — там не показываем.
+                Анимированные «потоки в точку» с первого экрана. Раньше рисунок
+                накрывал текст: столбец в grid растягивается на высоту строки, и
+                при высоте картинки 480px привязка к низу поднимала её до самого
+                заголовка. Теперь она живёт в полосе, зарезервированной через
+                lg:pb-28, и полоса её обрезает — выйти на текст физически нельзя.
+
+                Хаб в ассете стоит ровно по вертикальному центру (y=400 из 800),
+                поэтому top-1/2 с -translate-y-1/2 показывает именно место, где
+                потоки сходятся, без подгонки числами. Ширину взял больше прежней
+                (560 против 420) — линии в ассете волосяные, и на мелком масштабе
+                от них оставалась дымка; здесь они выходят около 1.4px.
+
+                Ниже lg столбцы складываются и полосы нет — там не показываем.
               */}
-              <svg
-                viewBox={`${SPARK_BOX.x} ${SPARK_BOX.y} ${SPARK_BOX.w} ${SPARK_BOX.h}`}
-                aria-hidden="true"
-                className="pointer-events-none absolute bottom-0 left-0 hidden h-32 w-32 select-none opacity-[0.13] lg:block"
-              >
-                <path d={LOGO_SPARK} fill={LOGO_ACCENT} />
-              </svg>
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-28 overflow-hidden lg:block">
+                <img
+                  src={withBase("/hero-flows.svg")}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute -left-10 top-1/2 w-[560px] -translate-y-1/2 select-none opacity-60"
+                />
+              </div>
             </div>
 
             <div className="relative">
