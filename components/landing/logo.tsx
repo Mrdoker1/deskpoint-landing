@@ -21,14 +21,22 @@ import {
   LOGO_SPARK,
   LOGO_WORD,
   MARK_BOX,
+  PAD,
 } from "@/lib/logo-mark";
 
 /** em на юнит: высота «D» (28.1 юнита) даёт 0.728em, как в прежнем локапе. */
 const EM_SCALE = 0.728 / 28.1;
 const round4 = (n: number) => Math.round(n * 10000) / 10000;
+
+/**
+ * viewBox с полем PAD со всех сторон и em под него же. Раз em считается на юнит,
+ * поле только добавляет воздух вокруг — сам рисунок остаётся прежнего размера.
+ */
+const viewBox = (w: number, h: number) =>
+  `${-PAD} ${-PAD} ${round4(w + PAD * 2)} ${round4(h + PAD * 2)}`;
 const emSize = (w: number, h: number) => ({
-  width: `${round4(w * EM_SCALE)}em`,
-  height: `${round4(h * EM_SCALE)}em`,
+  width: `${round4((w + PAD * 2) * EM_SCALE)}em`,
+  height: `${round4((h + PAD * 2) * EM_SCALE)}em`,
 });
 
 /**
@@ -123,7 +131,7 @@ export function LogoMark({
 }) {
   return (
     <svg
-      viewBox={`0 0 ${MARK_BOX.w} ${MARK_BOX.h}`}
+      viewBox={viewBox(MARK_BOX.w, MARK_BOX.h)}
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       className={className}
@@ -142,7 +150,7 @@ export function Logo({ className }: { className?: string }) {
       aria-label="Deskpoint"
     >
       <svg
-        viewBox={`0 0 ${LOCKUP.w} ${LOCKUP.h}`}
+        viewBox={viewBox(LOCKUP.w, LOCKUP.h)}
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
         className="shrink-0"
