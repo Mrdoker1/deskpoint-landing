@@ -55,6 +55,7 @@ export function Navigation() {
   const hasBackdrop = isScrolled || isMobileMenuOpen;
 
   return (
+    <>
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
         hasBackdrop
@@ -109,53 +110,60 @@ export function Navigation() {
           </div>
         </div>
 
-        {/*
-          Панель на весь экран ниже бара: top-16 совпадает с его высотой (бар на
-          мобильном h-16), поэтому логотип и крестик остаются видимыми и рабочими
-          — z-40 против z-50 у шапки. Разделы крупным кеглем, вход и заявка
-          прижаты к низу, где до них дотягивается палец.
-        */}
-        {isMobileMenuOpen && (
-          <div
-            id="mobile-menu"
-            className="fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col overflow-y-auto bg-background px-6 pb-10 pt-10 md:hidden"
-          >
-            <div className="flex flex-col">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={withBase(link.href)}
-                  className="border-b border-foreground/10 py-5 font-display text-4xl tracking-tight"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
-
-            <div className="mt-auto space-y-4 pt-10">
-              <a
-                href={DASHBOARD_URL}
-                className="block text-center text-lg text-muted-foreground"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Войти
-              </a>
-              <Button
-                asChild
-                className="h-14 w-full rounded-full bg-primary text-base text-primary-foreground shadow-md hover:bg-primary/90"
-              >
-                <a
-                  href={withBase("/#lead")}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Оставить заявку
-                </a>
-              </Button>
-            </div>
-          </div>
-        )}
       </nav>
     </header>
+
+    {/*
+      Панель ЗА пределами <header>, и это обязательно. У шапки при открытом меню
+      включается backdrop-blur, а backdrop-filter делает элемент содержащим блоком
+      для position:fixed потомков — внутри шапки top-16/bottom-0 отсчитывались бы
+      не от окна, а от её 64px, и панель схлопывалась в полоску, сквозь которую
+      просвечивала страница.
+
+      top-16 совпадает с высотой бара (на мобильном h-16), z-40 против z-50 у
+      шапки — логотип и крестик остаются видимыми и рабочими. Разделы крупным
+      кеглем, вход и заявка прижаты к низу, где до них дотягивается палец.
+    */}
+    {isMobileMenuOpen && (
+      <div
+        id="mobile-menu"
+        className="fixed inset-x-0 bottom-0 top-16 z-40 flex flex-col overflow-y-auto bg-background px-6 pb-10 pt-10 md:hidden"
+      >
+        <div className="flex flex-col">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={withBase(link.href)}
+              className="border-b border-foreground/10 py-5 font-display text-4xl tracking-tight"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {link.name}
+            </a>
+          ))}
+        </div>
+
+        <div className="mt-auto space-y-4 pt-10">
+          <a
+            href={DASHBOARD_URL}
+            className="block text-center text-lg text-muted-foreground"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Войти
+          </a>
+          <Button
+            asChild
+            className="h-14 w-full rounded-full bg-primary text-base text-primary-foreground shadow-md hover:bg-primary/90"
+          >
+            <a
+              href={withBase("/#lead")}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Оставить заявку
+            </a>
+          </Button>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
