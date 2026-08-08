@@ -1,6 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import {
+  LOGO_ACCENT,
+  LOGO_CURVE,
+  LOGO_CURVES,
+  LOGO_DOTS,
+  LOGO_SPARK,
+} from "@/lib/logo-mark";
 
 const features = [
   {
@@ -548,6 +555,16 @@ function PerMinuteVisual() {
  * на 1024px свободной ширины остаётся меньше 200px — линии полезли бы на текст.
  * От 1280px её хватает с запасом.
  */
+/**
+ * Куда сажаем знак: центр звезды в его боксе — (54.07, 48.67), и он должен
+ * попасть в MARK_AT. Отсюда сдвиг = MARK_AT − центр × масштаб.
+ */
+const MARK_AT = { x: 240, y: 160 };
+const MARK_SCALE = 0.9;
+const MARK_PLACE = `translate(${round3(MARK_AT.x - 54.07 * MARK_SCALE)} ${round3(
+  MARK_AT.y - 48.67 * MARK_SCALE
+)}) scale(${MARK_SCALE})`;
+
 const FEATURE_WAVES = [
   { d: "M-20 46C120 18 300 74 480 40", op: 0.16, dur: "13s", delay: "-1.1s" },
   { d: "M-20 74C140 52 280 108 480 72", op: 0.2, dur: "10s", delay: "-4.6s" },
@@ -576,8 +593,33 @@ function FeatureWaves() {
           from { stroke-dashoffset: 1; }
           to { stroke-dashoffset: 0; }
         }
+        /* Вращение и пульс — вокруг центра звезды. transform-box: view-box
+           разрешает transform-origin в координатах viewBox, а группы лежат прямо
+           под <svg>, поэтому их локальная система — она и есть: (240 160) верны.
+           Внутри группы, у которой уже есть translate/scale, тот же origin
+           означал бы другую точку. */
+        .fw-orbit, .fw-star {
+          transform-box: view-box;
+          transform-origin: ${MARK_AT.x}px ${MARK_AT.y}px;
+        }
+        .fw-orbit { animation: fw-spin 64s linear infinite; }
+        @keyframes fw-spin { to { transform: rotate(360deg); } }
+
+        .fw-star { animation: fw-breathe 5.5s ease-in-out infinite; }
+        @keyframes fw-breathe {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.16); }
+        }
+
+        .fw-dot { animation: fw-twinkle 6s ease-in-out infinite; }
+        @keyframes fw-twinkle {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.35; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .fw-pulse { display: none; }
+          .fw-orbit, .fw-star, .fw-dot { animation: none; }
         }
       `}</style>
       {FEATURE_WAVES.map((w) => (
@@ -601,7 +643,34 @@ function FeatureWaves() {
           style={{ animationDuration: w.dur, animationDelay: w.delay }}
         />
       ))}
-      <circle cx="240" cy="160" r="3.4" fill={ACCENT} fillOpacity="0.55" />
+      {/* Знак из логотипа вместо точки. Дуги с точками медленно обходят звезду,
+          звезда дышит. Разнесены на две группы, потому что вращаются и
+          масштабируются по-разному, но вокруг одного центра. */}
+      <g opacity="0.85">
+        <g className="fw-orbit">
+          <g transform={MARK_PLACE}>
+            {LOGO_CURVES.map((d) => (
+              <path key={d} d={d} fill={LOGO_CURVE} stroke={LOGO_CURVE} strokeWidth="1.3" strokeLinejoin="round" />
+            ))}
+            {LOGO_DOTS.map((d, i) => (
+              <path
+                key={d}
+                className="fw-dot"
+                d={d}
+                fill={LOGO_ACCENT}
+                stroke={LOGO_ACCENT}
+                strokeWidth="1.4"
+                style={{ animationDelay: `${-i * 1.5}s` }}
+              />
+            ))}
+          </g>
+        </g>
+        <g className="fw-star">
+          <g transform={MARK_PLACE}>
+            <path d={LOGO_SPARK} fill={LOGO_ACCENT} />
+          </g>
+        </g>
+      </g>
     </svg>
   );
 }
