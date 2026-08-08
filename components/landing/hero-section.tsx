@@ -5,6 +5,56 @@ import { Button } from "@/components/ui/button";
 import { withBase } from "@/lib/base-path";
 import { ArrowRight, Play } from "lucide-react";
 
+/**
+ * Полосы над и под формой — декор для узких экранов. Боковые hero-flows.svg
+ * показываются только от 1300px, ниже первый экран оставался вовсе без графики.
+ * Поэтому полосы, наоборот, прячутся от 1300px: два декора разом читались бы как
+ * шум.
+ *
+ * Линии сходятся к центру — туда, где стоит форма, — и импульсы бегут в ту же
+ * сторону: у верхней полосы сверху вниз к форме, у нижней снизу вверх. Нижняя
+ * получает тот же рисунок, отражённый по вертикали.
+ */
+const HERO_STRIP = [
+  { d: "M-10 8C90 2 150 30 200 34", op: 0.16, dur: "7s", delay: "-0.4s" },
+  { d: "M410 12C310 6 250 32 200 34", op: 0.16, dur: "8.5s", delay: "-3.1s" },
+  { d: "M-10 30C80 26 160 38 200 36", op: 0.1, dur: "11s", delay: "-5.6s" },
+  { d: "M410 34C320 30 240 40 200 36", op: 0.1, dur: "9.5s", delay: "-1.9s" },
+];
+
+function HeroStrip({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 400 44"
+      fill="none"
+      aria-hidden="true"
+      className={`pointer-events-none w-full select-none min-[1300px]:hidden ${className}`}
+    >
+      {HERO_STRIP.map((s) => (
+        <path
+          key={s.d}
+          d={s.d}
+          stroke="#402718"
+          strokeOpacity={s.op}
+          strokeWidth="1.4"
+        />
+      ))}
+      {HERO_STRIP.map((s) => (
+        <path
+          key={`pulse-${s.d}`}
+          className="flow-pulse"
+          d={s.d}
+          pathLength="1"
+          stroke="#74452c"
+          strokeOpacity="0.5"
+          strokeWidth="2"
+          style={{ animationDuration: s.dur, animationDelay: s.delay }}
+        />
+      ))}
+    </svg>
+  );
+}
+
 export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -120,9 +170,11 @@ export function HeroSection() {
           На узком экране кнопка ужимается кеглем и внутренними отступами, а поле
           отдаёт ей место через min-w-0 — переносить кнопку под поле не нужно.
         */}
+        <HeroStrip className={`mt-10 h-11 ${reveal("delay-300")}`} />
+
         <form
           onSubmit={handleSubmit}
-          className={`mx-auto mt-12 flex w-full max-w-[620px] items-center rounded-full border border-foreground/15 bg-white py-1.5 pl-5 pr-1.5 shadow-sm sm:pl-7 ${reveal(
+          className={`mx-auto mt-6 flex w-full max-w-[620px] items-center rounded-full border border-foreground/15 bg-white py-1.5 pl-5 pr-1.5 shadow-sm min-[1300px]:mt-12 sm:pl-7 ${reveal(
             "delay-300"
           )}`}
         >
@@ -171,6 +223,9 @@ export function HeroSection() {
             Смотреть демо
           </span>
         </a>
+
+        {/* Тот же рисунок, отражённый: импульсы идут снизу вверх, к форме. */}
+        <HeroStrip className={`mt-10 h-11 -scale-y-100 ${reveal("delay-500")}`} />
       </div>
     </section>
   );

@@ -87,6 +87,27 @@
     }
   }
 
+  /* Бегущий по линии импульс — тот же приём, что в hero-flows.svg: короткий
+     штрих гоняется вдоль пути через stroke-dashoffset. Путь должен иметь
+     pathLength="1", длительность и сдвиг фазы задаются на месте. */
+  .flow-pulse {
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 0.12 0.88;
+    animation: flow-pulse linear infinite;
+  }
+
+  @keyframes flow-pulse {
+    from { stroke-dashoffset: 1; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow-pulse {
+      display: none;
+    }
+  }
+
   /* Кнопка заявки: в неё приходят потоки, и она отзывается расходящимся
      кольцом. Ритм тот же, что у .ping в hero-flows.svg на первом экране. */
   .lead-pulse {
