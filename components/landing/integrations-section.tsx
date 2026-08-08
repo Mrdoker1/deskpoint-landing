@@ -12,23 +12,34 @@ import { withBase } from "@/lib/base-path";
  * логотипы выходят дуотоном — светлые части светлыми, тёмные тёмными.
  *
  * Цена маски: она читает альфа-канал, а не цвет. Бейджи, нарисованные как
- * цветная плашка с белым знаком поверх (VK, MAX, MTS Exolve, WhatsApp), в альфе
- * сплошные и превращались в залитый прямоугольник. Плашки из этих четырёх файлов
- * удалены — остался знак, и силуэт получается верным. Если добавляете логотип с
- * подложкой, её нужно убрать так же.
+ * цветная плашка с белым знаком поверх, в альфе сплошные и превращались в
+ * залитый прямоугольник. Поправлено в самих файлах, двумя способами:
+ *
+ * VK и WhatsApp — плашка удалена, остался знак.
+ * MAX и MTS Exolve — плашка оставлена, а знак вырезан в ней дыркой: контур знака
+ * дописан к контуру плашки с fill-rule="evenodd", и подконтур внутри внешнего
+ * вычитается. У них знак без плашки не читался.
+ *
+ * Если добавляете логотип с подложкой, его нужно поправить так же.
  */
 
 /** Знаки без названия внутри файла — подписываем рядом. */
 const ICON_ONLY = ["gigachat"];
 
 /**
- * Логотипы, которым в общем боксе тесно: у файла много пустоты внутри viewBox,
- * и при общей высоте знак выходит мельче соседей. Значение — класс высоты.
+ * Бокс маски. По умолчанию широкий — под логотипы с названием внутри файла.
+ *
+ * Исключения по две причины. Mango: рисунок сидит внутри viewBox с большим
+ * запасом пустоты и при общей высоте выходит мельче соседей. GigaChat: это
+ * голый знак, и в широком боксе его подпись отъезжала в конец бокса — значит
+ * бокс должен быть по знаку, квадратным.
  */
-const LOGO_HEIGHT: Record<string, string> = {
-  mango: "h-9",
-  gigachat: "h-7",
+const LOGO_BOX: Record<string, string> = {
+  mango: "h-9 w-[124px]",
+  gigachat: "h-7 w-7",
 };
+
+const LOGO_BOX_DEFAULT = "h-6 w-[124px]";
 
 /**
  * Интеграции. Логотип берётся из public/logos/<slug>.svg.
@@ -54,7 +65,7 @@ type Integration = (typeof integrations)[number];
 
 function IntegrationCard({ item }: { item: Integration }) {
   const src = withBase(`/logos/${item.slug}.svg`);
-  const height = LOGO_HEIGHT[item.slug] ?? "h-6";
+  const box = LOGO_BOX[item.slug] ?? LOGO_BOX_DEFAULT;
 
   return (
     <div className="group flex h-[92px] w-56 shrink-0 flex-col justify-center border border-foreground/10 px-8 transition-all duration-300 hover:border-foreground/30 hover:bg-foreground/[0.02]">
@@ -64,7 +75,7 @@ function IntegrationCard({ item }: { item: Integration }) {
         <span
           role="img"
           aria-label={item.name}
-          className={`block ${height} w-[124px] bg-current opacity-85 transition-opacity group-hover:opacity-100`}
+          className={`block ${box} bg-current opacity-85 transition-opacity group-hover:opacity-100`}
           style={{
             maskImage: `url(${src})`,
             WebkitMaskImage: `url(${src})`,
