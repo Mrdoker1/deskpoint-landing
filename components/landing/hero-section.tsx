@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { withBase } from "@/lib/base-path";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 
 export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false);
@@ -150,14 +150,24 @@ export function HeroSection() {
           </Button>
         </form>
 
-        <a
-          href="#demo"
-          className={`mt-6 inline-block text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline ${reveal(
-            "delay-500"
-          )}`}
-        >
-          Посмотреть, как это работает
-        </a>
+        {/*
+          Вторичное действие рядом с формой. Прежняя текстовая ссылка
+          «Посмотреть, как это работает» не говорила, что там видео и что это
+          демо продукта, — теперь это кнопка с иконкой воспроизведения и прямым
+          названием. Ведёт на #demo — плеер в блоке «Как это работает».
+        */}
+        <div className={`mt-6 flex justify-center ${reveal("delay-500")}`}>
+          <Button
+            asChild
+            variant="outline"
+            className="h-12 rounded-full border-foreground/20 bg-transparent px-6 text-base text-foreground hover:border-primary/50 hover:bg-primary/10"
+          >
+            <a href="#demo">
+              <Play className="mr-2 h-4 w-4" />
+              Смотреть демо
+            </a>
+          </Button>
+        </div>
       </div>
     </section>
   );

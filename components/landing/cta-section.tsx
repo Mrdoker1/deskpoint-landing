@@ -341,7 +341,7 @@ export function CtaSection() {
                       variant="outline"
                       className="h-14 px-8 text-base rounded-full border-foreground/25 hover:bg-primary/10 hover:border-primary/40"
                     >
-                      <a href="#demo">Как это работает</a>
+                      <a href="#demo">Смотреть демо</a>
                     </Button>
                   </div>
                 </form>
