@@ -176,9 +176,13 @@ export function CtaSection() {
     }
   }
 
+  /**
+   * Поля живут на инвертированной подложке, поэтому цвета берутся от background,
+   * а не от foreground: на тёмном это светлое.
+   */
   const field =
-    "w-full h-12 px-4 border border-foreground/20 bg-transparent focus:outline-none focus:border-foreground/50";
-  const fieldLabel = "mb-2 block text-sm text-muted-foreground";
+    "w-full h-12 px-4 border border-background/25 bg-transparent text-background placeholder:text-background/40 focus:outline-none focus:border-background/60";
+  const fieldLabel = "mb-2 block text-sm text-background/60";
 
   return (
     <section
@@ -250,7 +254,15 @@ export function CtaSection() {
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={onSubmit} className="space-y-4">
+                <form onSubmit={onSubmit}>
+                  {/*
+                    Инвертированная подложка под полями — для контраста с
+                    карточкой. Кнопки намеренно оставлены за её пределами, на
+                    светлом: линии потоков лежат внутри этой же колонки и
+                    рисуются поверх любого её фона, поэтому на тёмном они бы
+                    пропали, а сделать подложку выше них нельзя — они её потомки.
+                  */}
+                  <div className="space-y-4 bg-foreground p-6 lg:p-8">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <label className="block">
                       <span className={fieldLabel}>Имя *</span>
@@ -296,17 +308,18 @@ export function CtaSection() {
                     <textarea
                       name="message"
                       rows={3}
-                      className="w-full px-4 py-3 border border-foreground/20 bg-transparent focus:outline-none focus:border-foreground/50 resize-y"
+                      className="w-full px-4 py-3 border border-background/25 bg-transparent text-background placeholder:text-background/40 focus:outline-none focus:border-background/60 resize-y"
                     />
                   </label>
 
                   {errorMessage && (
-                    <p className="text-sm text-red-700" role="alert">
+                    <p className="text-sm text-red-300" role="alert">
                       {errorMessage}
                     </p>
                   )}
+                  </div>
 
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-6">
                     {/* Потоки приходят в кнопку слева, кнопка отзывается
                         расходящимся кольцом. Обёртка relative — точка отсчёта и
                         для потоков, и для кольца. */}
