@@ -80,12 +80,15 @@ function LeadFlows() {
           .lf-pulse { display: none; }
         }
       `}</style>
+      {/* Светлые: карточка теперь тёмная, прежние #402718 / #74452c на ней
+          пропадали. Непрозрачность статичных линий поднята — на тёмном фоне
+          светлый штрих читается слабее, чем тёмный на светлом. */}
       {LEAD_FLOWS.map((f) => (
         <path
           key={f.d}
           d={f.d}
-          stroke="#402718"
-          strokeOpacity={f.op}
+          stroke="#EFE4DB"
+          strokeOpacity={f.op + 0.08}
           strokeWidth="1.6"
         />
       ))}
@@ -95,8 +98,8 @@ function LeadFlows() {
           className="lf-pulse"
           d={f.d}
           pathLength="1"
-          stroke="#74452c"
-          strokeOpacity="0.6"
+          stroke="#F3E7DC"
+          strokeOpacity="0.85"
           strokeWidth="2.2"
           style={{ animationDuration: f.dur, animationDelay: f.delay }}
         />
@@ -192,15 +195,17 @@ export function CtaSection() {
     >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         <div
-          className={`relative border border-foreground overflow-hidden transition-all duration-1000 ${
+          className={`relative overflow-hidden bg-foreground text-background transition-all duration-1000 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
           onMouseMove={handleMouseMove}
         >
+          {/* Подсветка за курсором стала светлой: тёмное пятно на тёмном фоне
+              не читалось бы. */}
           <div
-            className="absolute inset-0 opacity-10 pointer-events-none transition-opacity duration-300"
+            className="absolute inset-0 opacity-20 pointer-events-none transition-opacity duration-300"
             style={{
-              background: `radial-gradient(600px circle at ${mousePosition.x}% ${mousePosition.y}%, oklch(0.44 0.075 48 / 0.2), transparent 42%)`,
+              background: `radial-gradient(600px circle at ${mousePosition.x}% ${mousePosition.y}%, oklch(0.96 0.015 80 / 0.22), transparent 42%)`,
             }}
           />
 
@@ -214,14 +219,14 @@ export function CtaSection() {
               <h2 className="text-3xl lg:text-5xl font-display tracking-tight leading-[1.02]">
                 Оставьте заявку — покажем Deskpoint на ваших обращениях.
               </h2>
-              <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-md">
+              <p className="mt-6 text-lg text-background/60 leading-relaxed max-w-md">
                 Разберём единый приём каналов и аналитику по команде, подберём
                 пакет функций и посчитаем usage под ваш объём.
               </p>
-              <p className="mt-6 text-sm text-muted-foreground font-mono">
+              <p className="mt-6 text-sm text-background/60 font-mono">
                 <a
                   href="mailto:hello@deskpoint.ru"
-                  className="underline underline-offset-4 hover:text-foreground"
+                  className="underline underline-offset-4 hover:text-background"
                 >
                   hello@deskpoint.ru
                 </a>{" "}
@@ -232,13 +237,13 @@ export function CtaSection() {
 
             <div className="relative">
               {submitState === "success" ? (
-                <div className="border border-foreground/15 p-6">
+                <div className="border border-background/20 p-6">
                   <p className="text-lg font-display mb-2">Заявка принята</p>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className="text-background/60 leading-relaxed">
                     Мы свяжемся в рабочие дни. Можно также написать на{" "}
                     <a
                       href="mailto:hello@deskpoint.ru"
-                      className="underline underline-offset-4 hover:text-foreground"
+                      className="underline underline-offset-4 hover:text-background"
                     >
                       hello@deskpoint.ru
                     </a>
@@ -247,22 +252,14 @@ export function CtaSection() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="mt-6 rounded-full"
+                    className="mt-6 rounded-full border-background/30 bg-transparent text-background hover:bg-background/10 hover:text-background"
                     onClick={() => setSubmitState("idle")}
                   >
                     Отправить ещё одну
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={onSubmit}>
-                  {/*
-                    Инвертированная подложка под полями — для контраста с
-                    карточкой. Кнопки намеренно оставлены за её пределами, на
-                    светлом: линии потоков лежат внутри этой же колонки и
-                    рисуются поверх любого её фона, поэтому на тёмном они бы
-                    пропали, а сделать подложку выше них нельзя — они её потомки.
-                  */}
-                  <div className="space-y-4 bg-foreground p-6 lg:p-8">
+                <form onSubmit={onSubmit} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <label className="block">
                       <span className={fieldLabel}>Имя *</span>
@@ -317,9 +314,8 @@ export function CtaSection() {
                       {errorMessage}
                     </p>
                   )}
-                  </div>
 
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-6">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                     {/* Потоки приходят в кнопку слева, кнопка отзывается
                         расходящимся кольцом. Обёртка relative — точка отсчёта и
                         для потоков, и для кольца. */}
@@ -327,18 +323,18 @@ export function CtaSection() {
                       <LeadFlows />
                       <span
                         aria-hidden="true"
-                        className="lead-pulse pointer-events-none absolute inset-0 rounded-full border border-primary/50"
+                        className="lead-pulse pointer-events-none absolute inset-0 rounded-full border border-background/50"
                       />
                     <Button
                       type="submit"
                       size="lg"
                       disabled={submitState === "loading"}
-                      /* Ховер непрозрачный, а не bg-primary/90: под кнопку
-                         уходят линии потоков, и через полупрозрачный фон они
-                         просвечивали. color-mix даёт ровно тот цвет, который
-                         давала полупрозрачность поверх фона страницы, так что
-                         кнопка выглядит как прежде. */
-                      className="relative bg-primary hover:bg-[color-mix(in_oklch,var(--dp-primary)_90%,var(--dp-background))] text-primary-foreground px-8 h-14 text-base rounded-full group shadow-lg"
+                      /* Кнопка светлая: коньячный primary на тёмно-коричневой
+                         карточке — соседние тона одного оттенка, кнопка бы
+                         слилась. Ховер непрозрачный, потому что под кнопку
+                         уходят линии потоков и сквозь полупрозрачный фон они
+                         просвечивали. */
+                      className="relative bg-background text-foreground hover:bg-[color-mix(in_oklch,var(--dp-background)_88%,white)] px-8 h-14 text-base rounded-full group shadow-lg"
                     >
                       {submitState === "loading"
                         ? "Отправляем…"
@@ -352,7 +348,7 @@ export function CtaSection() {
                       asChild
                       size="lg"
                       variant="outline"
-                      className="h-14 px-8 text-base rounded-full border-foreground/25 hover:bg-primary/10 hover:border-primary/40"
+                      className="h-14 px-8 text-base rounded-full border-background/30 bg-transparent text-background hover:bg-background/10 hover:border-background/60 hover:text-background"
                     >
                       <a href="#demo">Смотреть демо</a>
                     </Button>
