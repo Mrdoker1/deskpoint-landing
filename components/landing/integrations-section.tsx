@@ -4,17 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { withBase } from "@/lib/base-path";
 
 /**
- * Логотипы вендорские и цветные, а нужны монохромные. Обесцвечиваем фильтром.
+ * Логотипы вендорские и цветные, а нужны плоские коричневые. Делается CSS-маской:
+ * она берёт из файла только форму, а цвет даёт currentColor — то есть тот же
+ * коричневый, что у текста страницы.
  *
- * Сначала пробовал CSS-маску — она даёт настоящий одноцветный силуэт, но не
- * годится: маска берёт альфа-канал, а не цвет. Логотипы, нарисованные как
- * цветная плашка с вырезанным внутри знаком (VK, MAX, MTS Exolve), в альфе
- * сплошные, и вместо марки получался закрашенный прямоугольник.
+ * Фильтр обесцвечивания тут не подходит: он сохраняет перепады яркости, и
+ * логотипы выходят дуотоном — светлые части светлыми, тёмные тёмными.
  *
- * Фильтр сохраняет внутренние перепады яркости, поэтому вырезы остаются видны.
- * sepia подмешан, чтобы серый не выпадал холодным пятном на тёплом фоне.
+ * Цена маски: она читает альфа-канал, а не цвет. Бейджи, нарисованные как
+ * цветная плашка с белым знаком поверх (VK, MAX, MTS Exolve, WhatsApp), в альфе
+ * сплошные и превращались в залитый прямоугольник. Плашки из этих четырёх файлов
+ * удалены — остался знак, и силуэт получается верным. Если добавляете логотип с
+ * подложкой, её нужно убрать так же.
  */
-const LOGO_FILTER = "grayscale(1) sepia(0.35) brightness(0.85)";
 
 /** Знаки без названия внутри файла — подписываем рядом. */
 const ICON_ONLY = ["gigachat"];
@@ -59,11 +61,20 @@ function IntegrationCard({ item }: { item: Integration }) {
       {/* Фиксированная высота ряда: логотипы разной пропорции, и без неё
           карточки в бегущей строке скакали бы по высоте. */}
       <div className="flex h-9 items-center gap-2">
-        <img
-          src={src}
-          alt={item.name}
-          className={`${height} w-auto max-w-[124px] object-contain object-left opacity-85 transition-opacity group-hover:opacity-100`}
-          style={{ filter: LOGO_FILTER }}
+        <span
+          role="img"
+          aria-label={item.name}
+          className={`block ${height} w-[124px] bg-current opacity-85 transition-opacity group-hover:opacity-100`}
+          style={{
+            maskImage: `url(${src})`,
+            WebkitMaskImage: `url(${src})`,
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+            maskPosition: "left center",
+            WebkitMaskPosition: "left center",
+          }}
         />
         {ICON_ONLY.includes(item.slug) && (
           <span className="text-lg font-medium">{item.name}</span>
