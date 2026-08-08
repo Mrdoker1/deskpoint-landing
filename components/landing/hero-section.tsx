@@ -151,23 +151,26 @@ export function HeroSection() {
         </form>
 
         {/*
-          Вторичное действие рядом с формой. Прежняя текстовая ссылка
-          «Посмотреть, как это работает» не говорила, что там видео и что это
-          демо продукта, — теперь это кнопка с иконкой воспроизведения и прямым
-          названием. Ведёт на #demo — плеер в блоке «Как это работает».
+          Вторичное действие — ссылкой, а не кнопкой: рядом с основной формой
+          вторая кнопка перетягивала внимание. Подчёркивание постоянное, а не по
+          ховеру: на тач-скрине ховера нет, и без него ссылка не читалась как
+          кликабельная. Название прямое — прежнее «Посмотреть, как это работает»
+          не говорило, что там демо. Ведёт на #demo — плеер в «Как это работает».
         */}
-        <div className={`mt-6 flex justify-center ${reveal("delay-500")}`}>
-          <Button
-            asChild
-            variant="outline"
-            className="h-12 rounded-full border-foreground/20 bg-transparent px-6 text-base text-foreground hover:border-primary/50 hover:bg-primary/10"
-          >
-            <a href="#demo">
-              <Play className="mr-2 h-4 w-4" />
-              Смотреть демо
-            </a>
-          </Button>
-        </div>
+        <a
+          href="#demo"
+          className={`mt-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground ${reveal(
+            "delay-500"
+          )}`}
+        >
+          {/* Треугольник залит: в контурном виде на 14px он читается как
+              случайная галочка. Подчёркнут только текст — иконка под чертой
+              выглядит грязно. */}
+          <Play className="h-3.5 w-3.5 shrink-0 fill-current" />
+          <span className="underline decoration-foreground/30 underline-offset-4">
+            Смотреть демо
+          </span>
+        </a>
       </div>
     </section>
   );
