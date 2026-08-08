@@ -6,26 +6,37 @@ import { withBase } from "@/lib/base-path";
 import { ArrowRight, Play } from "lucide-react";
 
 /**
- * Полосы над и под формой — декор для узких экранов. Боковые hero-flows.svg
+ * Полосы над и под текстом — декор для узких экранов. Боковые hero-flows.svg
  * показываются только от 1300px, ниже первый экран оставался вовсе без графики.
  * Поэтому полосы, наоборот, прячутся от 1300px: два декора разом читались бы как
  * шум.
  *
- * Линии сходятся к центру — туда, где стоит форма, — и импульсы бегут в ту же
- * сторону: у верхней полосы сверху вниз к форме, у нижней снизу вверх. Нижняя
- * получает тот же рисунок, отражённый по вертикали.
+ * Линии тянутся во всю ширину и просто текут, не сходясь. Прежний вариант сводил
+ * левые и правые в одну точку по центру, и они встречались лоб в лоб — выглядело
+ * как случайное пересечение, а не как рисунок.
+ *
+ * Пересечений нет: линии идут строго по возрастанию y во всех узлах, то есть
+ * отличаются только сдвигом по вертикали.
  */
 const HERO_STRIP = [
-  { d: "M-10 8C90 2 150 30 200 34", op: 0.16, dur: "7s", delay: "-0.4s" },
-  { d: "M410 12C310 6 250 32 200 34", op: 0.16, dur: "8.5s", delay: "-3.1s" },
-  { d: "M-10 30C80 26 160 38 200 36", op: 0.1, dur: "11s", delay: "-5.6s" },
-  { d: "M410 34C320 30 240 40 200 36", op: 0.1, dur: "9.5s", delay: "-1.9s" },
+  { d: "M-20 26C130 6 230 6 380 26C530 46 630 46 780 26C930 6 1030 6 1220 26", op: 0.16, dur: "13s", delay: "-1.2s" },
+  { d: "M-20 70C130 54 230 54 380 70C530 86 630 86 780 70C930 54 1030 54 1220 70", op: 0.2, dur: "10s", delay: "-5.4s" },
+  { d: "M-20 114C130 94 230 94 380 114C530 134 630 134 780 114C930 94 1030 94 1220 114", op: 0.12, dur: "16s", delay: "-3.1s" },
 ];
 
+/**
+ * Ширина во весь экран, поэтому полоса стоит отдельным блоком секции, а не
+ * внутри контейнера с max-w и боковыми отступами — там она обрывалась бы, не
+ * доходя до краёв. Высота свободная: viewBox широкий, и при w-full она
+ * получается пропорционально.
+ *
+ * Толщины взяты из hero-flows.svg — 1.8 у статичной линии и 2.2 у импульса, —
+ * чтобы боковой рисунок и полосы читались одним набором.
+ */
 function HeroStrip({ className = "" }: { className?: string }) {
   return (
     <svg
-      viewBox="0 0 400 44"
+      viewBox="0 0 1200 140"
       fill="none"
       aria-hidden="true"
       className={`pointer-events-none w-full select-none min-[1300px]:hidden ${className}`}
@@ -36,7 +47,7 @@ function HeroStrip({ className = "" }: { className?: string }) {
           d={s.d}
           stroke="#402718"
           strokeOpacity={s.op}
-          strokeWidth="1.4"
+          strokeWidth="1.8"
         />
       ))}
       {HERO_STRIP.map((s) => (
@@ -46,8 +57,8 @@ function HeroStrip({ className = "" }: { className?: string }) {
           d={s.d}
           pathLength="1"
           stroke="#74452c"
-          strokeOpacity="0.5"
-          strokeWidth="2"
+          strokeOpacity="0.55"
+          strokeWidth="2.2"
           style={{ animationDuration: s.dur, animationDelay: s.delay }}
         />
       ))}
@@ -134,11 +145,15 @@ export function HeroSection() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-[1080px] px-6 py-24 text-center lg:py-32">
-        {/* Над строкой «Для сервисного бизнеса…» — там пустое место, а рядом с
-            формой полоса поджимала её к тексту. */}
-        <HeroStrip className={`mb-10 h-11 ${reveal("")}`} />
+      {/* Полосы стоят блоками секции, а не внутри контейнера ниже: тому задан
+          max-w-[1080px] и боковые отступы, и полосы обрывались, не доходя до
+          краёв экрана. */}
+      <HeroStrip className={`relative z-10 ${reveal("")}`} />
 
+      {/* Полосы стоят вплотную к тексту, поэтому вертикальные отступы контейнера
+          ниже 1300px убраны — иначе между ними и текстом оставалось бы py-24.
+          От 1300px полосы скрыты, и отступы возвращаются. */}
+      <div className="relative z-10 mx-auto w-full max-w-[1080px] px-6 py-8 text-center min-[1300px]:py-24 min-[1300px]:lg:py-32">
         <p
           className={`font-mono text-xs font-medium uppercase tracking-[0.22em] text-primary lg:text-sm ${reveal(
             ""
@@ -225,10 +240,10 @@ export function HeroSection() {
             Смотреть демо
           </span>
         </a>
-
-        {/* Тот же рисунок, отражённый: импульсы идут снизу вверх, к форме. */}
-        <HeroStrip className={`mt-10 h-11 -scale-y-100 ${reveal("delay-500")}`} />
       </div>
+
+      {/* Тот же рисунок, отражённый по вертикали — чтобы низ не повторял верх. */}
+      <HeroStrip className={`relative z-10 -scale-y-100 ${reveal("delay-500")}`} />
     </section>
   );
 }

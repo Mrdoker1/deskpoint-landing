@@ -28,22 +28,32 @@ export function AudienceSection() {
       className="relative overflow-hidden py-24 lg:py-32 border-t border-foreground/10"
     >
       {/*
-        Картинка прижата к правому нижнему углу секции и упирается в её нижнюю
-        границу: bottom-0 плюс overflow-hidden у секции срезают всё, что не
-        поместилось по высоте. Поэтому у неё задана только ширина — высота
-        свободна, и кадрирование идёт снизу, а не масштабированием.
+        Картинка центрируется в свободной зоне — от правого края текста до края
+        экрана, — а не жмётся в угол. Левая граница зоны считается точно: контейнер
+        имеет max-w-[1400px] и mx-auto, значит его контент начинается на
+        max((100vw − 1400)/2, 0) + 48 (это lg:px-12), а текст занимает от него
+        max-w-3xl = 768. Отсюда и смещение 816.
 
-        Ниже lg не показываем: текст занимает всю ширину, картинка легла бы на
-        него.
+        По низу упирается в границу секции: bottom-0 плюс overflow-hidden у секции
+        срежут всё, что не поместится. Ширина тянется по зоне до 560 — так
+        картинка растёт вместе с экраном, а не остаётся мелкой на широком.
+
+        Показываем от xl: на 1280 зона выходит около 460px, ниже она схлопывается
+        и картинка полезла бы на текст.
       */}
-      <img
-        src={withBase("/man.png")}
-        alt=""
+      <div
         aria-hidden="true"
-        className={`pointer-events-none absolute bottom-0 right-0 hidden w-[380px] max-w-[38%] select-none transition-all duration-1000 lg:block xl:w-[460px] ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-        }`}
-      />
+        className="pointer-events-none absolute bottom-0 right-0 hidden select-none xl:flex xl:items-end xl:justify-center"
+        style={{ left: "calc(max((100vw - 1400px) / 2, 0px) + 816px)" }}
+      >
+        <img
+          src={withBase("/man.png")}
+          alt=""
+          className={`w-full max-w-[560px] transition-all duration-1000 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
+        />
+      </div>
 
       <div className="relative max-w-[1400px] mx-auto px-6 lg:px-12">
         <div

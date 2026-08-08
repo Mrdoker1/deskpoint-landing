@@ -87,6 +87,16 @@
     }
   }
 
+  /* Лента слайдера: прокрутка остаётся, полоса убирается. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Бегущий по линии импульс — тот же приём, что в hero-flows.svg: короткий
      штрих гоняется вдоль пути через stroke-dashoffset. Путь должен иметь
      pathLength="1", длительность и сдвиг фазы задаются на месте. */

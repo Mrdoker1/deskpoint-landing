@@ -127,6 +127,36 @@ function CaseFlows() {
 export function CasesSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  /**
+   * Активная карточка — та, чей центр ближе к центру видимой части ленты.
+   * Считаем по факту прокрутки, а не по индексу нажатой точки: листать можно и
+   * пальцем, и точки должны за этим следовать.
+   */
+  const onTrackScroll = () => {
+    const track = trackRef.current;
+    if (!track) return;
+    const middle = track.scrollLeft + track.clientWidth / 2;
+    let best = 0;
+    let bestDistance = Infinity;
+    Array.from(track.children).forEach((node, i) => {
+      const el = node as HTMLElement;
+      const distance = Math.abs(el.offsetLeft + el.offsetWidth / 2 - middle);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = i;
+      }
+    });
+    setActive(best);
+  };
+
+  /** scrollIntoView с block: nearest — иначе браузер уводит и вертикаль страницы. */
+  const goTo = (index: number) => {
+    const el = trackRef.current?.children[index] as HTMLElement | undefined;
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -173,7 +203,11 @@ export function CasesSection() {
           Карусель на JS не нужна: snap даёт то же поведение нативно, без
           библиотеки и без ломающейся клавиатурной навигации.
         */}
-        <div className="relative mt-14 -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-0 lg:pb-0">
+        <div
+          ref={trackRef}
+          onScroll={onTrackScroll}
+          className="no-scrollbar relative mt-14 -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-0"
+        >
           {CASES.map((c, idx) => (
             <article
               key={c.id}
@@ -221,6 +255,24 @@ export function CasesSection() {
                 ))}
               </div>
             </article>
+          ))}
+        </div>
+
+        {/* Точки только там, где лента вообще прокручивается: на lg это сетка. */}
+        <div className="mt-6 flex justify-center gap-2 lg:hidden">
+          {CASES.map((c, i) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => goTo(i)}
+              aria-label={`Кейс ${i + 1}`}
+              aria-current={i === active}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                i === active
+                  ? "w-6 bg-primary"
+                  : "w-2 bg-foreground/20 hover:bg-foreground/40"
+              }`}
+            />
           ))}
         </div>
 
