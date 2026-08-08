@@ -537,6 +537,75 @@ function PerMinuteVisual() {
   );
 }
 
+/**
+ * Декор в пустоте справа от заголовка секции.
+ *
+ * Мотив намеренно другой, чем на первом экране, в кейсах и у кнопки заявки: там
+ * везде потоки сходятся в узел, и четвёртый такой же читался бы как повтор.
+ * Здесь две группы параллельных волн — рифма к «двум столпам» в заголовке.
+ *
+ * Показываем от xl, а не от lg: заголовок на кегле 6xl занимает около 750px, и
+ * на 1024px свободной ширины остаётся меньше 200px — линии полезли бы на текст.
+ * От 1280px её хватает с запасом.
+ */
+const FEATURE_WAVES = [
+  { d: "M-20 46C120 18 300 74 480 40", op: 0.16, dur: "13s", delay: "-1.1s" },
+  { d: "M-20 74C140 52 280 108 480 72", op: 0.2, dur: "10s", delay: "-4.6s" },
+  { d: "M-20 102C110 86 300 128 480 100", op: 0.13, dur: "15s", delay: "-2.3s" },
+  { d: "M-20 218C140 194 270 250 480 214", op: 0.13, dur: "11.5s", delay: "-6.4s" },
+  { d: "M-20 246C110 226 290 274 480 242", op: 0.2, dur: "14s", delay: "-3.2s" },
+  { d: "M-20 274C150 258 265 300 480 270", op: 0.16, dur: "9.5s", delay: "-7.8s" },
+];
+
+function FeatureWaves() {
+  return (
+    <svg
+      viewBox="0 0 460 320"
+      fill="none"
+      aria-hidden="true"
+      className="pointer-events-none absolute right-0 top-1/2 hidden h-[320px] w-[460px] -translate-y-1/2 select-none xl:block"
+    >
+      <style>{`
+        .fw-pulse {
+          fill: none;
+          stroke-linecap: round;
+          stroke-dasharray: 0.1 0.9;
+          animation: fw-flow linear infinite;
+        }
+        @keyframes fw-flow {
+          from { stroke-dashoffset: 1; }
+          to { stroke-dashoffset: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .fw-pulse { display: none; }
+        }
+      `}</style>
+      {FEATURE_WAVES.map((w) => (
+        <path
+          key={w.d}
+          d={w.d}
+          stroke="#402718"
+          strokeOpacity={w.op}
+          strokeWidth="1.6"
+        />
+      ))}
+      {FEATURE_WAVES.map((w) => (
+        <path
+          key={`pulse-${w.d}`}
+          className="fw-pulse"
+          d={w.d}
+          pathLength="1"
+          stroke="#74452c"
+          strokeOpacity="0.55"
+          strokeWidth="2.2"
+          style={{ animationDuration: w.dur, animationDelay: w.delay }}
+        />
+      ))}
+      <circle cx="240" cy="160" r="3.4" fill={ACCENT} fillOpacity="0.55" />
+    </svg>
+  );
+}
+
 function AnimatedVisual({ type }: { type: string }) {
   switch (type) {
     case "analytics":
@@ -632,17 +701,18 @@ export function FeaturesSection() {
     <section
       id="features"
       ref={sectionRef}
-      className="relative py-24 lg:py-32"
+      className="relative overflow-hidden py-24 lg:py-32"
     >
       <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
         {/* Header */}
-        <div className="mb-16 lg:mb-24">
+        <div className="relative mb-16 lg:mb-24">
+          <FeatureWaves />
           <span className="inline-flex items-center gap-3 text-sm font-mono text-muted-foreground mb-6">
             <span className="w-8 h-px bg-foreground/30" />
             Возможности
           </span>
           <h2
-            className={`text-4xl lg:text-6xl font-display tracking-tight transition-all duration-700 ${
+            className={`relative max-w-3xl text-4xl lg:text-6xl font-display tracking-tight transition-all duration-700 ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
