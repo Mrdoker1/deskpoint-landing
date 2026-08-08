@@ -69,13 +69,18 @@ const CASE_FLOWS = [
   { d: "M60 288C360 268 310 150 520 150", op: 0.12, dur: "9.5s", delay: "-6.8s" },
 ];
 
+/**
+ * viewBox шире точки сходимости на 40: узел стоит на x=520, а кольцо вокруг него
+ * радиусом 26 — при ширине ровно 520 его правая половина уходила за границу
+ * viewBox и срезалась.
+ */
 function CaseFlows() {
   return (
     <svg
-      viewBox="0 0 520 300"
+      viewBox="0 0 560 300"
       fill="none"
       aria-hidden="true"
-      className="pointer-events-none absolute -top-10 right-0 hidden h-[300px] w-[520px] select-none lg:block"
+      className="pointer-events-none absolute -top-10 right-0 hidden h-[300px] w-[560px] select-none lg:block"
     >
       <style>{`
         .cf-pulse {
