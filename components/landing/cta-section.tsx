@@ -319,7 +319,11 @@ export function CtaSection() {
                     {/* Потоки приходят в кнопку слева, кнопка отзывается
                         расходящимся кольцом. Обёртка relative — точка отсчёта и
                         для потоков, и для кольца. */}
-                    <span className="relative inline-flex shrink-0">
+                    {/* w-full до sm: в колонку с items-stretch обёртка тянется
+                        на всю ширину, а кнопка внутри оставалась по тексту — и
+                        кольцо, сидящее на обёртке через inset-0, обводило пустоту
+                        рядом с кнопкой. Тянем обе. */}
+                    <span className="relative inline-flex w-full shrink-0 sm:w-auto">
                       <LeadFlows />
                       <span
                         aria-hidden="true"
@@ -334,7 +338,7 @@ export function CtaSection() {
                          слилась. Ховер непрозрачный, потому что под кнопку
                          уходят линии потоков и сквозь полупрозрачный фон они
                          просвечивали. */
-                      className="relative bg-background text-foreground hover:bg-[color-mix(in_oklch,var(--dp-background)_88%,white)] px-8 h-14 text-base rounded-full group shadow-lg"
+                      className="relative w-full sm:w-auto bg-background text-foreground hover:bg-[color-mix(in_oklch,var(--dp-background)_88%,white)] px-8 h-14 text-base rounded-full group shadow-lg"
                     >
                       {submitState === "loading"
                         ? "Отправляем…"
