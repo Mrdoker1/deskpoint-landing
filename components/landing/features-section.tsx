@@ -602,19 +602,34 @@ function FeatureWaves() {
           transform-box: view-box;
           transform-origin: ${MARK_AT.x}px ${MARK_AT.y}px;
         }
-        .fw-orbit { animation: fw-spin 64s linear infinite; }
-        @keyframes fw-spin { to { transform: rotate(360deg); } }
-
-        .fw-star { animation: fw-breathe 5.5s ease-in-out infinite; }
-        @keyframes fw-breathe {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.16); }
+        /* Один такт на всё: линии сходятся к звезде и расходятся обратно.
+           Подкрутка при сжатии — та же логика, что у фигуриста, прижавшего руки:
+           собралось — провернулось быстрее. Поворот за цикл возвращается в ноль,
+           иначе на стыке был бы рывок. Сжатие резкое (затягивает), разлёт
+           медленнее и с небольшим перелётом — так это читается как упругость, а
+           не как равномерная прокрутка. */
+        .fw-orbit { animation: fw-collapse 8s ease-in-out infinite; }
+        @keyframes fw-collapse {
+          0%   { transform: rotate(0deg) scale(1); animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
+          38%  { transform: rotate(15deg) scale(0.64); animation-timing-function: cubic-bezier(0.25, 0.9, 0.35, 1); }
+          46%  { transform: rotate(16deg) scale(0.66); }
+          78%  { transform: rotate(-4deg) scale(1.07); animation-timing-function: cubic-bezier(0.3, 0, 0.25, 1); }
+          100% { transform: rotate(0deg) scale(1); }
         }
 
-        .fw-dot { animation: fw-twinkle 6s ease-in-out infinite; }
-        @keyframes fw-twinkle {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.35; }
+        /* Вспышка приходится ровно на 38% — момент, когда линии собрались. */
+        .fw-star { animation: fw-flare 8s ease-in-out infinite; }
+        @keyframes fw-flare {
+          0%   { transform: scale(1); }
+          38%  { transform: scale(1.38); }
+          58%  { transform: scale(0.98); }
+          100% { transform: scale(1); }
+        }
+
+        .fw-dot { animation: fw-charge 8s ease-in-out infinite; }
+        @keyframes fw-charge {
+          0%, 100% { opacity: 0.7; }
+          38% { opacity: 1; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -652,7 +667,9 @@ function FeatureWaves() {
             {LOGO_CURVES.map((d) => (
               <path key={d} d={d} fill={LOGO_CURVE} stroke={LOGO_CURVE} strokeWidth="1.3" strokeLinejoin="round" />
             ))}
-            {LOGO_DOTS.map((d, i) => (
+            {/* Без разброса по фазе: точки светятся в один такт со схождением,
+                иначе они спорят с общим ритмом и движение рассыпается. */}
+            {LOGO_DOTS.map((d) => (
               <path
                 key={d}
                 className="fw-dot"
@@ -660,7 +677,6 @@ function FeatureWaves() {
                 fill={LOGO_ACCENT}
                 stroke={LOGO_ACCENT}
                 strokeWidth="1.4"
-                style={{ animationDelay: `${-i * 1.5}s` }}
               />
             ))}
           </g>
