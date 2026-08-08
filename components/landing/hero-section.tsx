@@ -135,6 +135,10 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[1080px] px-6 py-24 text-center lg:py-32">
+        {/* Над строкой «Для сервисного бизнеса…» — там пустое место, а рядом с
+            формой полоса поджимала её к тексту. */}
+        <HeroStrip className={`mb-10 h-11 ${reveal("")}`} />
+
         <p
           className={`font-mono text-xs font-medium uppercase tracking-[0.22em] text-primary lg:text-sm ${reveal(
             ""
@@ -170,11 +174,9 @@ export function HeroSection() {
           На узком экране кнопка ужимается кеглем и внутренними отступами, а поле
           отдаёт ей место через min-w-0 — переносить кнопку под поле не нужно.
         */}
-        <HeroStrip className={`mt-10 h-11 ${reveal("delay-300")}`} />
-
         <form
           onSubmit={handleSubmit}
-          className={`mx-auto mt-6 flex w-full max-w-[620px] items-center rounded-full border border-foreground/15 bg-white py-1.5 pl-5 pr-1.5 shadow-sm min-[1300px]:mt-12 sm:pl-7 ${reveal(
+          className={`mx-auto mt-12 flex w-full max-w-[620px] items-center rounded-full border border-foreground/15 bg-white py-1.5 pl-5 pr-1.5 shadow-sm sm:pl-7 ${reveal(
             "delay-300"
           )}`}
         >

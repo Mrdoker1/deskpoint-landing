@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { withBase } from "@/lib/base-path";
 
 /** No fabricated testimonials — invite early customers instead. */
 export function AudienceSection() {
@@ -24,9 +25,27 @@ export function AudienceSection() {
     <section
       id="pilot"
       ref={sectionRef}
-      className="relative py-24 lg:py-32 border-t border-foreground/10"
+      className="relative overflow-hidden py-24 lg:py-32 border-t border-foreground/10"
     >
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+      {/*
+        Картинка прижата к правому нижнему углу секции и упирается в её нижнюю
+        границу: bottom-0 плюс overflow-hidden у секции срезают всё, что не
+        поместилось по высоте. Поэтому у неё задана только ширина — высота
+        свободна, и кадрирование идёт снизу, а не масштабированием.
+
+        Ниже lg не показываем: текст занимает всю ширину, картинка легла бы на
+        него.
+      */}
+      <img
+        src={withBase("/man.png")}
+        alt=""
+        aria-hidden="true"
+        className={`pointer-events-none absolute bottom-0 right-0 hidden w-[380px] max-w-[38%] select-none transition-all duration-1000 lg:block xl:w-[460px] ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        }`}
+      />
+
+      <div className="relative max-w-[1400px] mx-auto px-6 lg:px-12">
         <div
           className={`max-w-3xl transition-all duration-700 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
