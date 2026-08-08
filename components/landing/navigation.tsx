@@ -8,6 +8,7 @@ import { withBase } from "@/lib/base-path";
 
 const navLinks = [
   { name: "Возможности", href: "/#features" },
+  { name: "Кейсы", href: "/#cases" },
   { name: "Как это работает", href: "/#how-it-works" },
   { name: "Тарифы", href: "/#pricing" },
 ];

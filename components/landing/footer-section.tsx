@@ -17,7 +17,7 @@ const footerLinks = {
   Компания: [
     { name: "Данные и 152-ФЗ", href: "/#data" },
     { name: "Безопасность", href: "/#security" },
-    { name: "Кейс Альгард", href: "/#case-algard" },
+    { name: "Кейсы", href: "/#cases" },
     { name: "Пилот", href: "/#pilot" },
   ],
   Правовое: [
