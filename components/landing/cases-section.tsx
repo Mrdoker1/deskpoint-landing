@@ -177,7 +177,7 @@ export function CasesSection() {
           {CASES.map((c, idx) => (
             <article
               key={c.id}
-              className={`group flex w-[85vw] shrink-0 snap-center flex-col border border-foreground/10 bg-background p-8 transition-all duration-700 hover:border-primary/40 sm:w-[420px] lg:w-auto lg:border-0 lg:p-10 ${
+              className={`group flex w-[85vw] shrink-0 snap-center flex-col border border-foreground/10 bg-white p-8 transition-all duration-700 hover:border-primary/40 sm:w-[420px] lg:w-auto lg:border-0 lg:p-10 ${
                 isVisible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
               }`}
               style={{ transitionDelay: `${150 + idx * 120}ms` }}
