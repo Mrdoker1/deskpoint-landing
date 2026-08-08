@@ -682,6 +682,15 @@ function AnimatedVisual({ type }: { type: string }) {
   }
 }
 
+/**
+ * Карточка возможности.
+ *
+ * На узком экране всё выровнено по центру — номер, столп, заголовок, текст и
+ * иконка. Раньше текст был слева, а иконка под ним по центру: связи между ними не
+ * читалось, иконка выглядела приблудившейся.
+ *
+ * От lg раскладка прежняя — мета, текст и иконка в строку с выключкой влево.
+ */
 function FeatureCard({ feature, index }: { feature: typeof features[0]; index: number }) {
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -706,7 +715,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
       }`}
       style={{ transitionDelay: `${index * 100}ms` }}
     >
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 py-12 lg:py-20 border-b border-foreground/10">
+      <div className="flex flex-col items-center gap-8 border-b border-foreground/10 py-12 text-center lg:flex-row lg:items-stretch lg:gap-16 lg:py-20 lg:text-left">
         {/* Number + pillar */}
         <div className="shrink-0 w-36">
           <span className="font-mono text-sm text-muted-foreground">
@@ -718,7 +727,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
         </div>
         
         {/* Content */}
-        <div className="flex-1 grid lg:grid-cols-2 gap-8 items-center">
+        <div className="w-full flex-1 grid lg:grid-cols-2 gap-8 items-center">
           <div>
             <h3 className="text-3xl lg:text-4xl font-display mb-4 group-hover:translate-x-2 transition-transform duration-500">
               {feature.title}
@@ -727,8 +736,7 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
               {feature.description}
             </p>
           </div>
-          
-          {/* Visual */}
+
           <div className="flex justify-center lg:justify-end">
             <div className="w-48 h-40 text-foreground">
               <AnimatedVisual type={feature.visual} />
