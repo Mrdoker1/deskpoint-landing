@@ -10,10 +10,21 @@ import { withBase } from "@/lib/base-path";
  * внутри файла — перекрашивать его не нужно.
  *
  * Бокс маски задан один на всех (h-6 w-32) с mask-size: contain: пропорции у
- * логотипов разные, от 3.4:1 до 5.75:1, и без общего бокса они шли бы разной
- * величины.
+ * логотипов разные, от квадратного знака GigaChat до 7.2:1 у YandexGPT, и без
+ * общего бокса они шли бы разной величины.
  */
-const FILE_LOGOS = ["vk", "avito", "amocrm", "bitrix24", "mango"];
+const FILE_LOGOS = [
+  "vk",
+  "avito",
+  "amocrm",
+  "bitrix24",
+  "mango",
+  "uis",
+  "mts-exolve",
+  "yookassa",
+  "yandexgpt",
+  "gigachat",
+];
 
 /**
  * Монохромные логотипы, встроенные контурами.
