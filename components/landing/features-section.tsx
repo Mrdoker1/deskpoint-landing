@@ -1,13 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  LOGO_ACCENT,
-  LOGO_CURVE,
-  LOGO_CURVES,
-  LOGO_DOTS,
-  LOGO_SPARK,
-} from "@/lib/logo-mark";
+import { LOGO_ACCENT, LOGO_SPARK } from "@/lib/logo-mark";
 
 const features = [
   {
@@ -574,6 +568,35 @@ const FEATURE_WAVES = [
   { d: "M-20 274C150 258 265 300 480 270", op: 0.16, dur: "9.5s", delay: "-7.8s" },
 ];
 
+/**
+ * Линии, растущие к звезде. Рисуются и анимируются ровно как волны выше и ниже —
+ * тот же штрих, тот же бегущий импульс — и начинаются там же, за краями бокса.
+ *
+ * Дуги из логотипа сюда не подставить: в экспорте это залитые ленты, то есть
+ * замкнутые контуры, а не осевые линии. Обводка по такому контуру дала бы
+ * двойную линию по обе стороны ленты, поэтому кривые здесь свои.
+ *
+ * Импульс бежит от начала пути к концу, а концом у всех стоит звезда — отсюда
+ * рост именно к ней.
+ *
+ * Пересечений нет по построению. Свободная полоса между группами волн узкая —
+ * примерно 130…192, ниже верхних волн и выше нижних, — и линии разложены внутри
+ * неё по возрастанию высоты истока: 134, 152, 172, 190. Верхние подходят к
+ * звезде сверху, нижние снизу, каждая пара вложена одна в другую. Сходятся все в
+ * одной точке, но она накрыта звездой, поэтому стык не виден.
+ */
+const SPOKE_END = "240 160";
+const MARK_SPOKES = [
+  { d: `M-20 134C110 116 88 158 ${SPOKE_END}`, op: 0.18, dur: "11s", delay: "-1.8s" },
+  { d: `M-20 152C120 138 104 159 ${SPOKE_END}`, op: 0.14, dur: "13.5s", delay: "-5.1s" },
+  { d: `M-20 172C120 186 104 161 ${SPOKE_END}`, op: 0.2, dur: "9.5s", delay: "-3.4s" },
+  { d: `M-20 190C110 206 88 162 ${SPOKE_END}`, op: 0.13, dur: "14.5s", delay: "-7.2s" },
+  { d: `M480 134C350 116 392 158 ${SPOKE_END}`, op: 0.15, dur: "12.5s", delay: "-2.6s" },
+  { d: `M480 152C360 138 376 159 ${SPOKE_END}`, op: 0.2, dur: "10s", delay: "-6.3s" },
+  { d: `M480 172C360 186 376 161 ${SPOKE_END}`, op: 0.13, dur: "15s", delay: "-4.4s" },
+  { d: `M480 190C350 206 392 162 ${SPOKE_END}`, op: 0.17, dur: "8.5s", delay: "-8.1s" },
+];
+
 function FeatureWaves() {
   return (
     <svg
@@ -593,48 +616,24 @@ function FeatureWaves() {
           from { stroke-dashoffset: 1; }
           to { stroke-dashoffset: 0; }
         }
-        /* Вращение и пульс — вокруг центра звезды. transform-box: view-box
-           разрешает transform-origin в координатах viewBox, а группы лежат прямо
-           под <svg>, поэтому их локальная система — она и есть: (240 160) верны.
+        /* Дыхание звезды — вокруг её центра. transform-box: view-box разрешает
+           transform-origin в координатах viewBox, а группа лежит прямо под
+           <svg>, поэтому её локальная система — она и есть: (240 160) верны.
            Внутри группы, у которой уже есть translate/scale, тот же origin
-           означал бы другую точку. */
-        .fw-orbit, .fw-star {
+           означал бы другую точку — потому посадка вынесена во вложенную. */
+        .fw-star {
           transform-box: view-box;
           transform-origin: ${MARK_AT.x}px ${MARK_AT.y}px;
+          animation: fw-breathe 6s ease-in-out infinite;
         }
-        /* Один такт на всё: линии сходятся к звезде и расходятся обратно.
-           Подкрутка при сжатии — та же логика, что у фигуриста, прижавшего руки:
-           собралось — провернулось быстрее. Поворот за цикл возвращается в ноль,
-           иначе на стыке был бы рывок. Сжатие резкое (затягивает), разлёт
-           медленнее и с небольшим перелётом — так это читается как упругость, а
-           не как равномерная прокрутка. */
-        .fw-orbit { animation: fw-collapse 8s ease-in-out infinite; }
-        @keyframes fw-collapse {
-          0%   { transform: rotate(0deg) scale(1); animation-timing-function: cubic-bezier(0.45, 0, 0.35, 1); }
-          38%  { transform: rotate(15deg) scale(0.64); animation-timing-function: cubic-bezier(0.25, 0.9, 0.35, 1); }
-          46%  { transform: rotate(16deg) scale(0.66); }
-          78%  { transform: rotate(-4deg) scale(1.07); animation-timing-function: cubic-bezier(0.3, 0, 0.25, 1); }
-          100% { transform: rotate(0deg) scale(1); }
-        }
-
-        /* Вспышка приходится ровно на 38% — момент, когда линии собрались. */
-        .fw-star { animation: fw-flare 8s ease-in-out infinite; }
-        @keyframes fw-flare {
-          0%   { transform: scale(1); }
-          38%  { transform: scale(1.38); }
-          58%  { transform: scale(0.98); }
-          100% { transform: scale(1); }
-        }
-
-        .fw-dot { animation: fw-charge 8s ease-in-out infinite; }
-        @keyframes fw-charge {
-          0%, 100% { opacity: 0.7; }
-          38% { opacity: 1; }
+        @keyframes fw-breathe {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.12); }
         }
 
         @media (prefers-reduced-motion: reduce) {
           .fw-pulse { display: none; }
-          .fw-orbit, .fw-star, .fw-dot { animation: none; }
+          .fw-star { animation: none; }
         }
       `}</style>
       {FEATURE_WAVES.map((w) => (
@@ -658,33 +657,32 @@ function FeatureWaves() {
           style={{ animationDuration: w.dur, animationDelay: w.delay }}
         />
       ))}
-      {/* Знак из логотипа вместо точки. Дуги с точками медленно обходят звезду,
-          звезда дышит. Разнесены на две группы, потому что вращаются и
-          масштабируются по-разному, но вокруг одного центра. */}
-      <g opacity="0.85">
-        <g className="fw-orbit">
-          <g transform={MARK_PLACE}>
-            {LOGO_CURVES.map((d) => (
-              <path key={d} d={d} fill={LOGO_CURVE} stroke={LOGO_CURVE} strokeWidth="1.3" strokeLinejoin="round" />
-            ))}
-            {/* Без разброса по фазе: точки светятся в один такт со схождением,
-                иначе они спорят с общим ритмом и движение рассыпается. */}
-            {LOGO_DOTS.map((d) => (
-              <path
-                key={d}
-                className="fw-dot"
-                d={d}
-                fill={LOGO_ACCENT}
-                stroke={LOGO_ACCENT}
-                strokeWidth="1.4"
-              />
-            ))}
-          </g>
-        </g>
-        <g className="fw-star">
-          <g transform={MARK_PLACE}>
-            <path d={LOGO_SPARK} fill={LOGO_ACCENT} />
-          </g>
+      {/* Линии к звезде — тем же штрихом и с тем же импульсом, что и волны */}
+      {MARK_SPOKES.map((s) => (
+        <path
+          key={s.d}
+          d={s.d}
+          stroke="#402718"
+          strokeOpacity={s.op}
+          strokeWidth="1.6"
+        />
+      ))}
+      {MARK_SPOKES.map((s) => (
+        <path
+          key={`pulse-${s.d}`}
+          className="fw-pulse"
+          d={s.d}
+          pathLength="1"
+          stroke="#74452c"
+          strokeOpacity="0.6"
+          strokeWidth="2.2"
+          style={{ animationDuration: s.dur, animationDelay: s.delay }}
+        />
+      ))}
+
+      <g className="fw-star">
+        <g transform={MARK_PLACE}>
+          <path d={LOGO_SPARK} fill={LOGO_ACCENT} />
         </g>
       </g>
     </svg>
