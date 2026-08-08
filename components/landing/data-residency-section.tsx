@@ -63,11 +63,11 @@ export function DataResidencySection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-px bg-foreground/10">
+        <div className="grid gap-6 md:grid-cols-3">
           {points.map((point, index) => (
             <div
               key={point.title}
-              className={`bg-background p-8 lg:p-10 transition-all duration-700 ${
+              className={`border border-foreground/10 bg-white p-8 transition-all duration-700 lg:p-10 ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
               style={{ transitionDelay: `${index * 80}ms` }}

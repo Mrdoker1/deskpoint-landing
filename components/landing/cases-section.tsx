@@ -173,7 +173,7 @@ export function CasesSection() {
           Карусель на JS не нужна: snap даёт то же поведение нативно, без
           библиотеки и без ломающейся клавиатурной навигации.
         */}
-        <div className="relative mt-14 -mx-6 flex snap-x snap-mandatory gap-px overflow-x-auto px-6 pb-4 lg:mx-0 lg:grid lg:grid-cols-3 lg:overflow-visible lg:bg-foreground/10 lg:px-0 lg:pb-0">
+        <div className="relative mt-14 -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-4 lg:mx-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-0 lg:pb-0">
           {CASES.map((c, idx) => (
             <article
               key={c.id}

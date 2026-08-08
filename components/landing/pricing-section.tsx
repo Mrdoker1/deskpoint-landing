@@ -214,18 +214,18 @@ export function PricingSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-px bg-foreground/10">
+        <div className="grid gap-6 md:grid-cols-2">
           {featurePackages.map((pkg, idx) => (
             <div
               key={pkg.id}
-              className={`relative flex flex-col p-8 lg:p-10 bg-background transition-all duration-700 ${
+              className={`relative flex flex-col bg-white p-8 transition-all duration-700 lg:p-10 ${
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-8"
               } ${
                 pkg.recommended
-                  ? "md:-my-4 md:py-12 border-2 border-primary z-[1]"
-                  : ""
+                  ? "border-2 border-primary z-[1] md:-my-4 md:py-12"
+                  : "border border-foreground/10"
               }`}
               style={{ transitionDelay: `${150 + idx * 120}ms` }}
             >

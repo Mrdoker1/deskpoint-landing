@@ -122,7 +122,7 @@ export function HeroSection() {
         */}
         <form
           onSubmit={handleSubmit}
-          className={`mx-auto mt-12 flex w-full max-w-[620px] items-center rounded-full border border-foreground/15 bg-card/60 py-1.5 pl-5 pr-1.5 shadow-sm backdrop-blur-sm sm:pl-7 ${reveal(
+          className={`mx-auto mt-12 flex w-full max-w-[620px] items-center rounded-full border border-foreground/15 bg-white py-1.5 pl-5 pr-1.5 shadow-sm sm:pl-7 ${reveal(
             "delay-300"
           )}`}
         >
